@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\HttpClient;
+namespace Pisko\CardMarket\HttpClient;
 
-use Mamoot\CardMarket\Exception\HttpClientNotConfiguredException;
+use Pisko\CardMarket\Exception\HttpClientNotConfiguredException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpClientCreator
 {
     const API_URL = 'https://api.cardmarket.com/ws/v2.0/output.json';
+    const API_URL_SANDBOX = 'https://sandbox.cardmarket.com/ws/v2.0/output.json';
 
     /**
      * @var array
@@ -22,6 +23,11 @@ class HttpClientCreator
     private $defaultParams = [
       'http_version' => '2.0',
     ];
+
+    /**
+     * @var string
+     */
+    private $url = self::API_URL;
 
     /**
      * @var string
@@ -49,9 +55,12 @@ class HttpClientCreator
      * @param array $clientParams
      *    The custom parameters to build the HttpClient.
      */
-    public function __construct(array $clientParams = [])
+    public function __construct(array $clientParams = [], bool $sandbox = false)
     {
         $this->clientParams = $clientParams;
+        if ($sandbox) {
+            $this->url = self::API_URL_SANDBOX;
+        }
     }
 
     /**
@@ -91,6 +100,11 @@ class HttpClientCreator
            && !empty($this->accessSecret);
     }
 
+    /**
+     * Return credentials
+     *
+     * @return array
+     */
     public function retrieveAppCredentials(): array
     {
         return [
@@ -155,5 +169,15 @@ class HttpClientCreator
         $this->accessSecret = $accessSecret;
 
         return $this;
+    }
+
+    /**
+     * return actual url
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
     }
 }

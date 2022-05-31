@@ -1,14 +1,13 @@
 <?php
-declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Resources\MarketPlaceInformation;
+namespace Pisko\CardMarket\Resources\MarketPlaceInformation;
 
-use Mamoot\CardMarket\Resources\HttpCaller;
+use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
  * Class GamesResource
  *
- * @package Mamoot\CardMarket\Resources\MarketPlaceInformation
+ * @package Pisko\CardMarket\Resources\MarketPlaceInformation
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */

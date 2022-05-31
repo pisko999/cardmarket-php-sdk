@@ -1,8 +1,8 @@
 <?php
 
-namespace Mamoot\CardMarket\Exception;
+namespace Pisko\CardMarket\Exception;
 
-use Mamoot\CardMarket\CardMarketException;
+use Pisko\CardMarket\CardMarketException;
 
 final class UnknownErrorException extends \Exception implements CardMarketException
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Mamoot\CardMarket\Tests\Resources;
+namespace Pisko\CardMarket\Tests\Resources;
 
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
-use Mamoot\CardMarket\Tests\ResourceTestCase;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
+use Pisko\CardMarket\Tests\ResourceTestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 class ExpansionResourceTest extends ResourceTestCase

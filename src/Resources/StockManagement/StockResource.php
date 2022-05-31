@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Resources\StockManagement;
+namespace Pisko\CardMarket\Resources\StockManagement;
 
-use Mamoot\CardMarket\Resources\HttpCaller;
+use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
  * Class StockInShoppingCartsResource
  *
- * @package Mamoot\CardMarket\Resources\StockManagement
+ * @package Pisko\CardMarket\Resources\StockManagement
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */

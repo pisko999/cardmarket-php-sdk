@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Exception;
+namespace Pisko\CardMarket\Exception;
 
-use Mamoot\CardMarket\CardMarketException;
+use Pisko\CardMarket\CardMarketException;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
@@ -62,6 +62,11 @@ final class HttpClientException extends \RuntimeException implements CardMarketE
     public static function tooManyRequests(ResponseInterface $response): self
     {
         return new self('You have reached your maximum calls per day.', 429, $response);
+    }
+
+    public static function noContent(ResponseInterface $response): self
+    {
+        return new self('Response contain no data.', 204, $response);
     }
 
     public function getResponse(): ResponseInterface

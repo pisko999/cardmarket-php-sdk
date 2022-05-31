@@ -18,8 +18,8 @@ Usage and examples
 
 ### Init the Cardmarket client
 ```php
-use Mamoot\CardMarket\Cardmarket;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Cardmarket;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 
 $httpCreator = new HttpClientCreator();
 $httpCreator->setApplicationToken('your_application_token')
@@ -59,7 +59,7 @@ Retrieve the details and price guide of a single card
 
 ```php
 // Cards details for "Electrode (Holo) - Jungle expansion"
-$cardmarket->cards()->getCardsDetails(273799);
+$cardmarket->products()->getProductDetails(273799);
 ```
 
 ### Add your custom Resources
@@ -69,7 +69,7 @@ It's not really a part of the Cardmarket SDK but if want to organize your work, 
 ````php
 namespace Vendor\MyNamespace;
 
-use Mamoot\CardMarket\Resources\HttpCaller;
+use Pisko\CardMarket\Resources\HttpCaller;
 
 class MyPokemonResource extends HttpCaller
 {
@@ -105,9 +105,9 @@ $magicStock = $cardmarket->stock()->getStockFile(1);
 ```
 
 Now, you can use the Helper `CsvStockFileHelper` to store data on your disk.
-   
+
 ```php
-use \Mamoot\CardMarket\Helper\CsvStockFileHelper;
+use \Pisko\CardMarket\Helpers\CsvStockFileHelper;
 
 $stockHelper = new CsvStockFileHelper($magicStock['stock']);
 $stockHelper->storeStockFileOnDisk("./mtg.csv");

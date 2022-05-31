@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Exception;
+namespace Pisko\CardMarket\Exception;
 
-use Mamoot\CardMarket\CardMarketException;
+use Pisko\CardMarket\CardMarketException;
 
 /**
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>

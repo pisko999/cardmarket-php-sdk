@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Helper;
+namespace Pisko\CardMarket\Helpers;
 
 /**
  * Class CsvStockFileHelper
  *
- * @package Mamoot\CardMarket\Helper
+ * @package Pisko\CardMarket\Helper
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */

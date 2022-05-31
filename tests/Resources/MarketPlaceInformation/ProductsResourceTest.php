@@ -1,10 +1,10 @@
 <?php
 
-namespace Mamoot\CardMarket\Tests\Resources;
+namespace Pisko\CardMarket\Tests\Resources;
 
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\GamesResource;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
-use Mamoot\CardMarket\Tests\ResourceTestCase;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
+use Pisko\CardMarket\Tests\ResourceTestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 class ProductsResourceTest extends ResourceTestCase
@@ -24,7 +24,7 @@ class ProductsResourceTest extends ResourceTestCase
 
     public function testRetrieveGamesList()
     {
-        $response = $this->productsResource->getCardsDetails(273799);
+        $response = $this->productsResource->getProductDetails(273799);
 
         $this->assertArrayHasKey('product', $response);
         $this->assertArrayHasKey('api', $response);

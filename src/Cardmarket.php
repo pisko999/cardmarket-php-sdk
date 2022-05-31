@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket;
+namespace Pisko\CardMarket;
 
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\GamesResource;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
-use Mamoot\CardMarket\Resources\OrdersManagement\OrdersResource;
-use Mamoot\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
-use Mamoot\CardMarket\Resources\StockManagement\StockResource;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
+use Pisko\CardMarket\Resources\OrdersManagement\OrdersResource;
+use Pisko\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
+use Pisko\CardMarket\Resources\StockManagement\StockResource;
 use Spatie\Macroable\Macroable;
 
 /**
  * Class Cardmarket
  *
- * @package Mamoot\CardMarket
+ * @package Pisko\CardMarket
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */
@@ -43,7 +43,7 @@ class Cardmarket
         return new ExpansionsResource($this->httpClientCreator);
     }
 
-    public function cards(): ProductsResource
+    public function products(): ProductsResource
     {
         return new ProductsResource($this->httpClientCreator);
     }

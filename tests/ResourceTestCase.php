@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Tests;
+namespace Pisko\CardMarket\Tests;
 
 use DG\BypassFinals;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
+use PHPUnit\Framework\MockObject\MockObject;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 
@@ -12,7 +13,7 @@ abstract class ResourceTestCase extends TestCase
 {
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $httpClientCreatorMock;
 
@@ -36,6 +37,10 @@ abstract class ResourceTestCase extends TestCase
 
     protected function setupHttpClientCreatorMock(array $responses = [])
     {
+
+        $this->httpClientCreatorMock->method('getUrl')
+            ->willReturn(HttpClientCreator::API_URL);
+
         $this->httpClientCreatorMock
           ->method('createHttpClient')
           ->willReturn($this->createHttpClientMock($responses));

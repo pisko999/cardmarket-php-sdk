@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Tests;
+namespace Pisko\CardMarket\Tests;
 
-use Mamoot\CardMarket\Cardmarket;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\GamesResource;
-use Mamoot\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
-use Mamoot\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
-use Mamoot\CardMarket\Resources\StockManagement\StockResource;
+use Pisko\CardMarket\Cardmarket;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
+use Pisko\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
+use Pisko\CardMarket\Resources\StockManagement\StockResource;
 use PHPUnit\Framework\TestCase;
 
 class CardmarketTest extends TestCase
@@ -29,7 +29,7 @@ class CardmarketTest extends TestCase
     {
         $this->assertInstanceOf(GamesResource::class, $this->cardmarket->games());
         $this->assertInstanceOf(ExpansionsResource::class, $this->cardmarket->expansions());
-        $this->assertInstanceOf(ProductsResource::class, $this->cardmarket->cards());
+        $this->assertInstanceOf(ProductsResource::class, $this->cardmarket->products());
         $this->assertInstanceOf(StockResource::class, $this->cardmarket->stock());
         $this->assertInstanceOf(StockInShoppingCartsResource::class, $this->cardmarket->stockInShoppingCarts());
     }

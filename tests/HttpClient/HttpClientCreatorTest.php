@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Tests\HttpClient;
+namespace Pisko\CardMarket\Tests\HttpClient;
 
-use Mamoot\CardMarket\Exception\HttpClientNotConfiguredException;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Exception\HttpClientNotConfiguredException;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

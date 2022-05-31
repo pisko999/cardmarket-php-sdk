@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Tests\Resources;
+namespace Pisko\CardMarket\Tests\Resources;
 
 use DG\BypassFinals;
-use Mamoot\CardMarket\Exception\HttpClientException;
-use Mamoot\CardMarket\Exception\HttpServerException;
-use Mamoot\CardMarket\Exception\UnknownErrorException;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
-use Mamoot\CardMarket\Resources\HttpCaller;
+use Pisko\CardMarket\Exception\HttpClientException;
+use Pisko\CardMarket\Exception\HttpServerException;
+use Pisko\CardMarket\Exception\UnknownErrorException;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Resources\HttpCaller;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
@@ -24,6 +24,9 @@ final class HttpCallerTest extends TestCase
         BypassFinals::enable();
 
         $this->httpClientCreatorMock = $this->createMock(HttpClientCreator::class);
+
+        $this->httpClientCreatorMock->method('getUrl')
+            ->willReturn(HttpClientCreator::API_URL);
 
         $this->httpClientCreatorMock
           ->method('retrieveAppCredentials')

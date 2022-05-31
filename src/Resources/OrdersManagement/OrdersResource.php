@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Resources\OrdersManagement;
+namespace Pisko\CardMarket\Resources\OrdersManagement;
 
-use Mamoot\CardMarket\Resources\HttpCaller;
+use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
  * Class OrdersResource
  *
- * @package Mamoot\CardMarket\Resources\OrdersResource
+ * @package Pisko\CardMarket\Resources\OrdersResource
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */

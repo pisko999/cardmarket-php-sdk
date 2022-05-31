@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket;
+namespace Pisko\CardMarket;
 
 /**
  * Every CardMarket PHP SDK exception needs to implement this exception.

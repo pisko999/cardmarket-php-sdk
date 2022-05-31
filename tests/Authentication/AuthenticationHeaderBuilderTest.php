@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Tests\HttpClient;
+namespace Pisko\CardMarket\Tests\HttpClient;
 
-use Mamoot\CardMarket\Authentication\AuthenticationHeaderBuilder;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Authentication\AuthenticationHeaderBuilder;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use PHPUnit\Framework\TestCase;
 
 final class AuthenticationHeaderBuilderTest extends TestCase

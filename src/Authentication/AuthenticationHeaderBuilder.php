@@ -1,8 +1,8 @@
 <?php
 
-namespace Mamoot\CardMarket\Authentication;
+namespace Pisko\CardMarket\Authentication;
 
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 
 /**
  * Class AuthenticationHeaderBuilder.

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Mamoot\CardMarket\Resources;
+namespace Pisko\CardMarket\Resources;
 
-use Mamoot\CardMarket\Authentication\AuthenticationHeaderBuilder;
-use Mamoot\CardMarket\Exception\HttpClientException;
-use Mamoot\CardMarket\Exception\HttpServerException;
-use Mamoot\CardMarket\Exception\UnknownErrorException;
-use Mamoot\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Authentication\AuthenticationHeaderBuilder;
+use Pisko\CardMarket\Exception\HttpClientException;
+use Pisko\CardMarket\Exception\HttpServerException;
+use Pisko\CardMarket\Exception\UnknownErrorException;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 /**
  * Class HttpCaller
  *
- * @package Mamoot\CardMarket\Resources
+ * @package Pisko\CardMarket\Resources
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */
@@ -45,34 +45,18 @@ abstract class HttpCaller
      * @param string $uri
      *
      * @return array
-     * @throws \Mamoot\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function get(string $uri): array
     {
-        $url = HttpClientCreator::API_URL . $uri;
+        $url = $this->httpClientCreator->getUrl() . $uri;
 
         try {
             $response = $this->httpClient->request('GET', $url, [
               'headers' => self::getAuthorizationHeader($url, 'GET'),
-            ]);
-
-            return self::processJsonResponse($response);
-        } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
-            throw $exception;
-        }
-    }
-
-    protected function put(string $uri, array $content)
-    {
-        $url = HttpClientCreator::API_URL . $uri;
-
-        try {
-            $response = $this->httpClient->request('PUT', $url, [
-              'headers' => self::getAuthorizationHeader($url, 'PUT'),
-              'body' => json_encode($content),
             ]);
 
             return self::processJsonResponse($response);
@@ -88,14 +72,14 @@ abstract class HttpCaller
      * @param array $content
      *
      * @return array
-     * @throws \Mamoot\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function put(string $uri, array $content): array
     {
-        $url = HttpClientCreator::API_URL . $uri;
+        $url = $this->httpClientCreator->getUrl() . $uri;
 
         try {
             $response = $this->httpClient->request('PUT', $url, [
@@ -131,7 +115,7 @@ abstract class HttpCaller
      * @param \Symfony\Contracts\HttpClient\ResponseInterface $response
      *
      * @return array
-     * @throws \Mamoot\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
@@ -174,7 +158,7 @@ abstract class HttpCaller
     /**
      * @param \Symfony\Contracts\HttpClient\ResponseInterface $response
      *
-     * @throws \Mamoot\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function handleErrors(ResponseInterface $response): void
@@ -182,6 +166,8 @@ abstract class HttpCaller
         $statusCode = $response->getStatusCode();
 
         switch ($statusCode) {
+          case 204:
+            throw HttpClientException::noContent($response);
           case 400:
             throw HttpClientException::badRequest($response);
           case 401:
