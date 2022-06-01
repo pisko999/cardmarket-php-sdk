@@ -4,9 +4,13 @@ declare(strict_types=1);
 namespace Pisko\CardMarket;
 
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\ArticlesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\MetaproductsResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\PricesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
+use Pisko\CardMarket\Resources\MarketPlaceInformation\UsersResource;
 use Pisko\CardMarket\Resources\OrdersManagement\OrdersResource;
 use Pisko\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
 use Pisko\CardMarket\Resources\StockManagement\StockResource;
@@ -18,6 +22,7 @@ use Spatie\Macroable\Macroable;
  * @package Pisko\CardMarket
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
+ * @author Petr Spinar <spinarp@gmail.com>
  */
 class Cardmarket
 {
@@ -33,6 +38,11 @@ class Cardmarket
         $this->httpClientCreator = $httpClientCreator;
     }
 
+    public function articles(): ArticlesResource
+    {
+        return new ArticlesResource($this->httpClientCreator);
+    }
+
     public function games(): GamesResource
     {
         return new GamesResource($this->httpClientCreator);
@@ -41,6 +51,21 @@ class Cardmarket
     public function expansions(): ExpansionsResource
     {
         return new ExpansionsResource($this->httpClientCreator);
+    }
+
+    public function metaproducts(): MetaproductsResource
+    {
+        return new MetaproductsResource($this->httpClientCreator);
+    }
+
+    public function orders(): OrdersResource
+    {
+        return new OrdersResource($this->httpClientCreator);
+    }
+
+    public function prices(): PricesResource
+    {
+        return new PricesResource($this->httpClientCreator);
     }
 
     public function products(): ProductsResource
@@ -58,9 +83,9 @@ class Cardmarket
         return new StockInShoppingCartsResource($this->httpClientCreator);
     }
 
-    public function orders(): OrdersResource
+    public function users(): UsersResource
     {
-        return new OrdersResource($this->httpClientCreator);
+        return new UsersResource($this->httpClientCreator);
     }
 
     /**
