@@ -21,14 +21,7 @@ final class ArticlesResource extends HttpCaller
      * @param int $idProduct
      * @param int $start
      * @param int $maxResults
-     * @param string|null $userType
-     * @param int|null $minUserScore
-     * @param int|null $idLanguage
-     * @param string|null $minCondition
-     * @param bool|null $isFoil
-     * @param bool|null $isSigned
-     * @param bool|null $isAltered
-     * @param int|null $minAvailable
+     * @param array $searchData
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -39,42 +32,35 @@ final class ArticlesResource extends HttpCaller
         int $idProduct,
         int $start = 0,
         int $maxResults = 100,
-        ?string $userType = null,
-        ?int $minUserScore = null,
-        ?int $idLanguage = null,
-        ?string $minCondition = null,
-        ?bool $isFoil = null,
-        ?bool $isSigned = null,
-        ?bool $isAltered = null,
-        ?int $minAvailable = null
+        array $searchData = []
     ): array
     {
         $data['start'] = $start;
         $data['maxResults'] = $maxResults;
 
-        if ($userType !== null) {
-            $data['userType'] = $userType;
+        if (isset($searchData['userType'])) {
+            $data['userType'] = $searchData['userType'];
         }
-        if ($minUserScore !== null) {
-            $data['minUserScore'] = $minUserScore;
+        if (isset($searchData['minUserScore'])) {
+            $data['minUserScore'] = $searchData['minUserScore'];
         }
-        if ($idLanguage !== null) {
-            $data['idLanguage'] = $idLanguage;
+        if (isset($searchData['idLanguage'])) {
+            $data['idLanguage'] = $searchData['idLanguage'];
         }
-        if ($minCondition !== null) {
-            $data['minCondition'] = $minCondition;
+        if (isset($searchData['minCondition'])) {
+            $data['minCondition'] = $searchData['minCondition'];
         }
-        if ($isFoil !== null) {
-            $data['isFoil'] = $isFoil;
+        if (isset($searchData['isFoil'])) {
+            $data['isFoil'] = $searchData['isFoil'];
         }
-        if ($isSigned !== null) {
-            $data['isSigned'] = $isSigned;
+        if (isset($searchData['isSigned'])) {
+            $data['isSigned'] = $searchData['isSigned'];
         }
-        if ($isAltered !== null) {
-            $data['isAltered'] = $isAltered;
+        if (isset($searchData['isAltered'])) {
+            $data['isAltered'] = $searchData['isAltered'];
         }
-        if ($minAvailable !== null) {
-            $data['minAvailable'] = $minAvailable;
+        if (isset($searchData['minAvailable'])) {
+            $data['minAvailable'] = $searchData['minAvailable'];
         }
 
         return $this->get(sprintf('/articles/%d?%s', $idProduct, http_build_query($data)));
@@ -86,28 +72,7 @@ final class ArticlesResource extends HttpCaller
      * @param int $idUser
      * @param int $start
      * @param int $maxResults
-     * @param int|null $idGame
-     * @param int|null $idLanguage
-     * @param string|null $minCondition
-     * @param string|null $rarity
-     * @param bool|null $isFoil
-     * @param bool|null $isSigned
-     * @param bool|null $isAltered
-     * @param bool|null $isReverseHolo
-     * @param bool|null $isPlayset
-     * @param bool|null $isFirstEd
-     * @param bool|null $isFullArt
-     * @param bool|null $isUberRare
-     * @param bool|null $isWithDie
-     * @param bool|null $isInPackage
-     * @param string|null $expansionName
-     * @param int|null $idWantslist
-     * @param string|null $name
-     * @param float|null $minPrice
-     * @param float|null $maxPrice
-     * @param string|null $comments
-     * @param int|null $minAvailable
-     * @param string|null $sort
+     * @param array $searchData
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -118,98 +83,77 @@ final class ArticlesResource extends HttpCaller
         int $idUser,
         int $start = 0,
         int $maxResults = 100,
-        ?string $name  = null,
-        ?string $expansionName = null,
-        ?int $idGame = null,
-        ?int $idLanguage = null,
-        ?string $minCondition = null,
-        ?string $rarity = null,
-        ?bool $isFoil = null,
-        ?bool $isSigned = null,
-        ?bool $isAltered = null,
-        ?bool $isReverseHolo = null,
-        ?bool $isPlayset = null,
-        ?bool $isFirstEd = null,
-        ?bool $isFullArt = null,
-        ?bool $isUberRare = null,
-        ?bool $isWithDie = null,
-        ?bool $isInPackage = null,
-        ?int $idWantslist = null,
-        ?float $minPrice = null,
-        ?float $maxPrice = null,
-        ?string $comments = null,
-        ?int $minAvailable = null,
-        ?string $sort = null
+        array $searchData = []
     ): array
     {
         $data['start'] = $start;
         $data['maxResults'] = $maxResults;
 
-        if ($name !== null) {
-            $data['name'] = $name;
+        if (isset($searchData['name'])) {
+            $data['name'] = $searchData['name'];
         }
-        if ($expansionName !== null) {
-            $data['expansionName'] = $expansionName;
+        if (isset($searchData['expansionName'])) {
+            $data['expansionName'] = $searchData['expansionName'];
         }
-        if ($idGame !== null) {
-            $data['idGame'] = $idGame;
+        if (isset($searchData['idGame'])) {
+            $data['idGame'] = $searchData['idGame'];
         }
-        if ($idLanguage !== null) {
-            $data['idLanguage'] = $idLanguage;
+        if (isset($searchData['idLanguage'])) {
+            $data['idLanguage'] = $searchData['idLanguage'];
         }
-        if ($minCondition !== null) {
-            $data['minCondition'] = $minCondition;
+        if (isset($searchData['minCondition'])) {
+            $data['minCondition'] = $searchData['minCondition'];
         }
-        if ($rarity !== null) {
-            $data['rarity'] = $rarity;
+        if (isset($searchData['rarity'])) {
+            $data['rarity'] = $searchData['rarity'];
         }
-        if ($isFoil !== null) {
-            $data['isFoil'] = $isFoil ? 'true' : 'false';
+        if (isset($searchData['isFoil'])) {
+            $data['isFoil'] = $searchData['isFoil'] ? 'true' : 'false';
         }
-        if ($isSigned !== null) {
-            $data['isSigned'] = $isSigned ? 'true' : 'false';
+        if (isset($searchData['isSigned'])) {
+            $data['isSigned'] = $searchData['isSigned'] ? 'true' : 'false';
         }
-        if ($isAltered !== null) {
-            $data['isAltered'] = $isAltered ? 'true' : 'false';
+        if (isset($searchData['isAltered'])) {
+            $data['isAltered'] = $searchData['isAltered'] ? 'true' : 'false';
         }
-        if ($isReverseHolo !== null) {
-            $data['isReverseHolo'] = $isReverseHolo ? 'true' : 'false';
+        if (isset($searchData['isReverseHolo'])) {
+            $data['isReverseHolo'] = $searchData['isReverseHolo'] ? 'true' : 'false';
         }
-        if ($isPlayset !== null) {
-            $data['isPlayset'] = $isPlayset ? 'true' : 'false';
+        if (isset($searchData['isPlayset'])) {
+            $data['isPlayset'] = $searchData['isPlayset'] ? 'true' : 'false';
         }
-        if ($isFirstEd !== null) {
-            $data['isFirstEd'] = $isFirstEd ? 'true' : 'false';
+        if (isset($searchData['isFirstEd'])) {
+            $data['isFirstEd'] = $searchData['isFirstEd'] ? 'true' : 'false';
         }
-        if ($isFullArt !== null) {
-            $data['isFullArt'] = $isFullArt ? 'true' : 'false';
+        if (isset($searchData['isFullArt'])) {
+            $data['isFullArt'] = $searchData['isFullArt'] ? 'true' : 'false';
         }
-        if ($isUberRare !== null) {
-            $data['isUberRare'] = $isUberRare ? 'true' : 'false';
+        if (isset($searchData['isUberRare'])) {
+            $data['isUberRare'] = $searchData['isUberRare'] ? 'true' : 'false';
         }
-        if ($isWithDie !== null) {
-            $data['isWithDie'] = $isWithDie ? 'true' : 'false';
+        if (isset($searchData['isWithDie'])) {
+            $data['isWithDie'] = $searchData['isWithDie'] ? 'true' : 'false';
         }
-        if ($isInPackage !== null) {
-            $data['isInPackage'] = $isInPackage ? 'true' : 'false';
+        if (isset($searchData['isInPackage'])) {
+            $data['isInPackage'] = $searchData['isInPackage'] ? 'true' : 'false';
         }
-        if ($idWantslist !== null) {
-            $data['idWantslist'] = $idWantslist;
+        if (isset($searchData['idWantslist'])) {
+            $data['idWantslist'] = $searchData['idWantslist'];
         }
-        if ($minPrice !== null) {
-            $data['minPrice'] = $minPrice;
+        if (isset($searchData['minPrice'])) {
+            $data['minPrice'] = $searchData['minPrice'];
         }
-        if ($maxPrice !== null) {
-            $data['maxPrice'] = $maxPrice;
+        if (isset($searchData['maxPrice'])) {
+            $data['maxPrice'] = $searchData['maxPrice'];
         }
-        if ($comments !== null) {
-            $data['comments'] = $comments;
+        if (isset($searchData['comments'])) {
+            $data['comments'] = $searchData['comments'];
         }
-        if ($minAvailable !== null) {
-            $data['minAvailable'] = $minAvailable;
+        if (isset($searchData['minAvailable'])) {
+            $data['minAvailable'] = $searchData['minAvailable'];
         }
-        if ($sort !== null) {
-            $data['sort'] = $sort;
+        if (isset($searchData['sort'])) {
+            $data['sort'] = $searchData['sort'];
         }
 
         return $this->get(sprintf('/users/%d/articles?%s', $idUser, http_build_query($data)));

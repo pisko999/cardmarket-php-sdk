@@ -32,9 +32,7 @@ final class MetaproductsResource extends HttpCaller
      * not working with spaces :(
      *
      * @param string $search
-     * @param bool|null $exact
-     * @param int|null $idGame
-     * @param int|null $idLanguage
+     * @param array $searchData
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -43,21 +41,19 @@ final class MetaproductsResource extends HttpCaller
      */
     public function findMetaProducts(
         string $search,
-        ?bool $exact = null,
-        ?int $idGame = null,
-        ?int $idLanguage = null
+        array $searchData = []
     ): array
     {
         $data = ['search' => str_replace(' ', '', $search)];
 
-        if ($exact !== null) {
-            $data['exact'] = $exact ? 'true' : 'false';
+        if (isset($searchData['exact'])) {
+            $data['exact'] = $searchData['exact'] ? 'true' : 'false';
         }
-        if ($idGame !== null) {
-            $data['idGame'] = $idGame;
+        if (isset($searchData['idGame'])) {
+            $data['idGame'] = $searchData['idGame'];
         }
-        if ($idLanguage !== null) {
-            $data['idLanguage'] = $idLanguage;
+        if (isset($searchData['idLanguage'])) {
+            $data['idLanguage'] = $searchData['idLanguage'];
         }
         return $this->get(sprintf('/metaproducts/find?%s', http_build_query($data)));
     }

@@ -50,9 +50,7 @@ final class ProductsResource extends HttpCaller
      * @param string $search
      * @param int $start
      * @param int $maxResults
-     * @param bool|null $exact
-     * @param int|null $idGame
-     * @param int|null $idLanguage
+     * @param array $searchData
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -63,23 +61,21 @@ final class ProductsResource extends HttpCaller
         string $search,
         int $start = 0,
         int $maxResults = 100,
-        ?bool $exact = null,
-        ?int $idGame = null,
-        ?int $idLanguage = null
+        array $searchData = []
     ): array
     {
         $data = ['search' => str_replace(' ', '', $search)];
         $data['start'] = $start;
         $data['maxResults'] = $maxResults;
 
-        if ($exact !== null) {
+        if (isset($searchData['exact'])) {
             $data['exact'] = 'true';
         }
-        if ($idGame !== null) {
-            $data['idGame'] = $idGame;
+        if (isset($searchData['idGame'])) {
+            $data['idGame'] = $searchData['idGame'];
         }
-        if ($idLanguage !== null) {
-            $data['idLanguage'] = $idLanguage;
+        if (isset($searchData['idLanguage'])) {
+            $data['idLanguage'] = $searchData['idLanguage'];
         }
         return $this->get(sprintf('/products/find?%s', http_build_query($data)));
     }

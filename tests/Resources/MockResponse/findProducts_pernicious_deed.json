@@ -1,0 +1,223 @@
+{
+  "product": [
+    {
+      "idProduct": 3226,
+      "idMetaproduct": 4145,
+      "countReprints": 4,
+      "enName": "Pernicious Deed",
+      "locName": "Pernicious Deed",
+      "localization": [
+        {
+          "name": "Pernicious Deed",
+          "idLanguage": "1",
+          "languageName": "English"
+        },
+        {
+          "name": "Action pernicieuse",
+          "idLanguage": "2",
+          "languageName": "French"
+        },
+        {
+          "name": "B\u00f6se Tat",
+          "idLanguage": "3",
+          "languageName": "German"
+        },
+        {
+          "name": "Acci\u00f3n perniciosa",
+          "idLanguage": "4",
+          "languageName": "Spanish"
+        },
+        {
+          "name": "Azione Malvagia",
+          "idLanguage": "5",
+          "languageName": "Italian"
+        }
+      ],
+      "website": "\/en\/Magic\/Products\/Singles\/Apocalypse\/Pernicious-Deed",
+      "image": ".\/img\/items\/1\/APC\/3226.jpg",
+      "gameName": "Magic the Gathering",
+      "categoryName": "Magic Single",
+      "idGame": "1",
+      "number": "114",
+      "rarity": "Rare",
+      "expansionName": "Apocalypse",
+      "expansionIcon": 34,
+      "countArticles": 1026,
+      "countFoils": 23,
+      "links": [
+        {
+          "rel": "product",
+          "href": "\/products\/3226",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "idProduct": 17616,
+      "idMetaproduct": 4145,
+      "countReprints": 4,
+      "enName": "Pernicious Deed",
+      "locName": "Pernicious Deed",
+      "localization": [
+        {
+          "name": "Pernicious Deed",
+          "idLanguage": "1",
+          "languageName": "English"
+        },
+        {
+          "name": "Action pernicieuse",
+          "idLanguage": "2",
+          "languageName": "French"
+        },
+        {
+          "name": "B\u00f6se Tat",
+          "idLanguage": "3",
+          "languageName": "German"
+        },
+        {
+          "name": "Acci\u00f3n perniciosa",
+          "idLanguage": "4",
+          "languageName": "Spanish"
+        },
+        {
+          "name": "Azione Malvagia",
+          "idLanguage": "5",
+          "languageName": "Italian"
+        }
+      ],
+      "website": "\/en\/Magic\/Products\/Singles\/Judge+Rewards+Promos\/Pernicious-Deed",
+      "image": ".\/img\/items\/1\/JR\/17616.jpg",
+      "gameName": "Magic the Gathering",
+      "categoryName": "Magic Single",
+      "idGame": "1",
+      "number": "2006-04",
+      "rarity": "Rare",
+      "expansionName": "Judge Rewards Promos",
+      "expansionIcon": 77,
+      "countArticles": 95,
+      "countFoils": 95,
+      "links": [
+        {
+          "rel": "product",
+          "href": "\/products\/17616",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "idProduct": 267335,
+      "idMetaproduct": 4145,
+      "countReprints": 4,
+      "enName": "Pernicious Deed",
+      "locName": "Pernicious Deed",
+      "localization": [
+        {
+          "name": "Pernicious Deed",
+          "idLanguage": "1",
+          "languageName": "English"
+        },
+        {
+          "name": "Action pernicieuse",
+          "idLanguage": "2",
+          "languageName": "French"
+        },
+        {
+          "name": "B\u00f6se Tat",
+          "idLanguage": "3",
+          "languageName": "German"
+        },
+        {
+          "name": "Acci\u00f3n perniciosa",
+          "idLanguage": "4",
+          "languageName": "Spanish"
+        },
+        {
+          "name": "Azione Malvagia",
+          "idLanguage": "5",
+          "languageName": "Italian"
+        }
+      ],
+      "website": "\/en\/Magic\/Products\/Singles\/Conspiracy\/Pernicious-Deed",
+      "image": ".\/img\/items\/1\/CNS\/267335.jpg",
+      "gameName": "Magic the Gathering",
+      "categoryName": "Magic Single",
+      "idGame": "1",
+      "number": "191",
+      "rarity": "Mythic",
+      "expansionName": "Conspiracy",
+      "expansionIcon": 249,
+      "countArticles": 581,
+      "countFoils": 50,
+      "links": [
+        {
+          "rel": "product",
+          "href": "\/products\/267335",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "idProduct": 319569,
+      "idMetaproduct": 4145,
+      "countReprints": 4,
+      "enName": "Pernicious Deed",
+      "locName": "Pernicious Deed",
+      "localization": [
+        {
+          "name": "Pernicious Deed",
+          "idLanguage": "1",
+          "languageName": "English"
+        },
+        {
+          "name": "Action pernicieuse",
+          "idLanguage": "2",
+          "languageName": "French"
+        },
+        {
+          "name": "B\u00f6se Tat",
+          "idLanguage": "3",
+          "languageName": "German"
+        },
+        {
+          "name": "Acci\u00f3n perniciosa",
+          "idLanguage": "4",
+          "languageName": "Spanish"
+        },
+        {
+          "name": "Azione Malvagia",
+          "idLanguage": "5",
+          "languageName": "Italian"
+        }
+      ],
+      "website": "\/en\/Magic\/Products\/Singles\/Masters+25\/Pernicious-Deed",
+      "image": ".\/img\/items\/1\/A25\/319569.jpg",
+      "gameName": "Magic the Gathering",
+      "categoryName": "Magic Single",
+      "idGame": "1",
+      "number": "212",
+      "rarity": "Rare",
+      "expansionName": "Masters 25",
+      "expansionIcon": 417,
+      "countArticles": 692,
+      "countFoils": 107,
+      "links": [
+        {
+          "rel": "product",
+          "href": "\/products\/319569",
+          "method": "GET"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "\/products\/find?search=pernici&start=0&maxResults=100",
+      "method": "GET"
+    }
+  ],
+  "api": {
+    "request-limit-max": "5000",
+    "request-limit-count": "7"
+  }
+}
