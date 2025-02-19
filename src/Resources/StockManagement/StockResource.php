@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Pisko\CardMarket\Resources\StockManagement;
 
+use Pisko\CardMarket\Entities\ArticleBaseEntity;
 use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
@@ -54,7 +55,8 @@ final class StockResource extends HttpCaller
      */
     public function increaseStock(int $articleId, int $stock): array
     {
-        return $this->put('/stock/increase', $this->createArticle($articleId, $stock));
+        $article = new ArticleBaseEntity(['idArticle' => $articleId, 'amount' => $stock]);
+        return $this->put('/stock/increase', $article);
     }
 
     /**
@@ -69,23 +71,7 @@ final class StockResource extends HttpCaller
      */
     public function decreaseStock(int $articleId, int $stock): array
     {
-        return $this->put('/stock/decrease', $this->createArticle($articleId, $stock));
-    }
-
-    /**
-     * Dedicated definition of the Article Object to deal with stock management.
-     * (https://api.cardmarket.com/ws/documentation/API_2.0:Entities:Article)
-     *
-     * @param int $articleId
-     * @param int $stock
-     *
-     * @return array
-     */
-    private function createArticle(int $articleId, int $stock): array
-    {
-        return [
-          "idArticle" => $articleId,
-          "amount" => $stock,
-        ];
+        $article = new ArticleBaseEntity(['idArticle' => $articleId, 'amount' => $stock]);
+        return $this->put('/stock/decrease', $article);
     }
 }

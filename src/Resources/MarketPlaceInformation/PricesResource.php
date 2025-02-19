@@ -18,15 +18,14 @@ final class PricesResource extends HttpCaller
      * Returns a price guide file in CSV format as string.
      *
      * @return string|false
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getPriceGuideFile(): string|false
     {
-        try {
-            $response = $this->get(sprintf('/priceguide'));
-            return gzdecode(base64_decode($response['priceguidefile']));
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $response = $this->get(sprintf('/priceguide'));
+        return gzdecode(base64_decode($response['priceguidefile']));
     }
 }

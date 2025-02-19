@@ -18,9 +18,11 @@ final class ExpansionsResource extends HttpCaller
      * Returns all expansions with single cards for the specified game.
      *
      * @param int $gameId
-     *
      * @return array
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getExpansionsListByGame(int $gameId): array
     {
@@ -31,9 +33,11 @@ final class ExpansionsResource extends HttpCaller
      * Returns all single cards for the specified expansion.
      *
      * @param int $expansionId
-     *
      * @return array
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getCardsListByExpansion(int $expansionId): array
     {

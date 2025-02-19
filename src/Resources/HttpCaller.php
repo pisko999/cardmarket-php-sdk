@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Pisko\CardMarket\Resources;
 
 use Pisko\CardMarket\Authentication\AuthenticationHeaderBuilder;
+use Pisko\CardMarket\Entities\BaseEntity;
 use Pisko\CardMarket\Exception\HttpClientException;
 use Pisko\CardMarket\Exception\HttpServerException;
 use Pisko\CardMarket\Exception\UnknownErrorException;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -46,6 +48,7 @@ abstract class HttpCaller
      *
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\HttpClientException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
@@ -56,9 +59,86 @@ abstract class HttpCaller
 
         try {
             $response = $this->httpClient->request('GET', $url, [
-              'headers' => self::getAuthorizationHeader($url, 'GET'),
+                'headers' => self::getAuthorizationHeader($url, 'GET'),
             ]);
 
+            return self::processJsonResponse($response);
+        } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
+            throw $exception;
+        }
+    }
+
+    /**
+     * Perform DELETE request.
+     *
+     * @param string $uri
+     * @param BaseEntity $content
+     *
+     * @return bool
+     * @throws TransportExceptionInterface
+     */
+    protected function delete(string $uri, BaseEntity $content): array
+    {
+        $url = $this->httpClientCreator->getUrl() . $uri;
+
+        try {
+            $response = $this->httpClient->request('DELETE', $url, [
+                'headers' => self::getAuthorizationHeader($url, 'DELETE'),
+                'body' => $content->getXML(),
+            ]);
+
+            return self::processJsonResponse($response);
+        } catch (TransportExceptionInterface $exception) {
+            throw $exception;
+        }
+    }
+
+    /**
+     * Perform POST request.
+     *
+     * @param string $uri
+     * @param BaseEntity $content
+     *
+     * @return array
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\HttpClientException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    protected function post(string $uri, BaseEntity $content): array
+    {
+        $url = $this->httpClientCreator->getUrl() . $uri;
+        try {
+            $response = $this->httpClient->request('POST', $url, [
+                'headers' => self::getAuthorizationHeader($url, 'POST'),
+                'body' => $content->getXML(),
+            ]);
+            return self::processJsonResponse($response);
+        } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
+            throw $exception;
+        }
+    }
+
+    /**
+     * Perform POST request.
+     *
+     * @param string $uri
+     *
+     * @return array
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\HttpClientException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    protected function postNoBody(string $uri): array
+    {
+        $url = $this->httpClientCreator->getUrl() . $uri;
+        try {
+            $response = $this->httpClient->request('POST', $url, [
+                'headers' => self::getAuthorizationHeader($url, 'POST'),
+            ]);
             return self::processJsonResponse($response);
         } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
             throw $exception;
@@ -73,18 +153,19 @@ abstract class HttpCaller
      *
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\HttpClientException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    protected function put(string $uri, array $content): array
+    protected function put(string $uri, BaseEntity $content): array
     {
         $url = $this->httpClientCreator->getUrl() . $uri;
 
         try {
             $response = $this->httpClient->request('PUT', $url, [
-              'headers' => self::getAuthorizationHeader($url, 'PUT'),
-              'body' => json_encode($content),
+                'headers' => self::getAuthorizationHeader($url, 'PUT'),
+                'body' => $content->getXML(),
             ]);
 
             return self::processJsonResponse($response);
@@ -116,6 +197,7 @@ abstract class HttpCaller
      *
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\HttpClientException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
@@ -124,6 +206,7 @@ abstract class HttpCaller
     {
         if ($response->getStatusCode() !== 200
             && $response->getStatusCode() !== 201
+            && $response->getStatusCode() !== 202
             && $response->getStatusCode() !== 206
         ) {
             $this->handleErrors($response);
@@ -159,12 +242,13 @@ abstract class HttpCaller
      * @param \Symfony\Contracts\HttpClient\ResponseInterface $response
      *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Pisko\CardMarket\Exception\HttpClientException
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function handleErrors(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();
-
+var_dump($response);
         switch ($statusCode) {
           case 204:
             throw HttpClientException::noContent($response);
@@ -182,6 +266,37 @@ abstract class HttpCaller
             throw new HttpServerException($statusCode);
           default:
             throw new UnknownErrorException();
+        }
+    }
+
+    /**
+     * Set up required and optional parameters
+     *
+     * @param array $data
+     * @param array $optional
+     * @return array
+     */
+    protected function setUpOptionalParameters(array $data, array $optional): array {
+        $output = [];
+        foreach ($optional as $key => $value) {
+            if(isset($data[$key])) {
+                $output[$key] = $this->setDataKey($data[$key], $value);
+            }
+        }
+        return $output;
+    }
+
+    /**
+     * Set one dataKey
+     * @param mixed $data
+     * @param string $type
+     * @return mixed
+     */
+    private function setDataKey(mixed $data, string $type): mixed {
+        if ($type === 'bool') {
+            return $data ? 'true' : 'false';
+        } else {
+            return $data;
         }
     }
 }

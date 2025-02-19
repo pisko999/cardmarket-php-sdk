@@ -19,9 +19,11 @@ final class ProductsResource extends HttpCaller
      * Returns a product specified by its ID.
      *
      * @param int $productId
-     *
      * @return array
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getProductDetails(int $productId): array
     {
@@ -32,16 +34,15 @@ final class ProductsResource extends HttpCaller
      * Returns a product file in CSV format as string.
      *
      * @return string|false
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getProductListFile(): string|false
     {
-        try {
-            $response = $this->get(sprintf('/productlist'));
-            return gzdecode(base64_decode($response['productsfile']));
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $response = $this->get(sprintf('/productlist'));
+        return gzdecode(base64_decode($response['productsfile']));
     }
 
     /**
@@ -64,19 +65,18 @@ final class ProductsResource extends HttpCaller
         array $searchData = []
     ): array
     {
+        $optional = [
+            'exact' => 'bool',
+            'idGame' => 'int',
+            'idLanguage' => 'int'
+        ];
+
         $data = ['search' => str_replace(' ', '', $search)];
         $data['start'] = $start;
         $data['maxResults'] = $maxResults;
 
-        if (isset($searchData['exact'])) {
-            $data['exact'] = 'true';
-        }
-        if (isset($searchData['idGame'])) {
-            $data['idGame'] = $searchData['idGame'];
-        }
-        if (isset($searchData['idLanguage'])) {
-            $data['idLanguage'] = $searchData['idLanguage'];
-        }
+        $data += $this->setUpOptionalParameters($searchData, $optional);
+
         return $this->get(sprintf('/products/find?%s', http_build_query($data)));
     }
 }

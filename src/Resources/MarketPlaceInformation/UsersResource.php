@@ -18,9 +18,11 @@ final class UsersResource extends HttpCaller
      * Returns a user specified by its ID or EXACT NAME.
      *
      * @param int|string $user
-     *
      * @return array
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getUserDetails(int|string $user): array
     {

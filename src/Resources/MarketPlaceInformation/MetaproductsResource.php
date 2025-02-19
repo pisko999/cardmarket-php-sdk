@@ -18,9 +18,11 @@ final class MetaproductsResource extends HttpCaller
      * Returns a metaproduct specified by its ID.
      *
      * @param int $idMetaproduct
-     *
      * @return array
-     * @throws \Exception
+     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getMetaProductDetails(int $idMetaproduct): array
     {
@@ -44,17 +46,16 @@ final class MetaproductsResource extends HttpCaller
         array $searchData = []
     ): array
     {
+        $optional = [
+            'exact' => 'bool',
+            'idGame' => 'int',
+            'idLanguage' => 'int'
+        ];
+
         $data = ['search' => str_replace(' ', '', $search)];
 
-        if (isset($searchData['exact'])) {
-            $data['exact'] = $searchData['exact'] ? 'true' : 'false';
-        }
-        if (isset($searchData['idGame'])) {
-            $data['idGame'] = $searchData['idGame'];
-        }
-        if (isset($searchData['idLanguage'])) {
-            $data['idLanguage'] = $searchData['idLanguage'];
-        }
+        $data += $this->setUpOptionalParameters($searchData, $optional);
+
         return $this->get(sprintf('/metaproducts/find?%s', http_build_query($data)));
     }
 }
