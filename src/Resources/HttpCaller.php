@@ -74,19 +74,22 @@ abstract class HttpCaller
      * @param string $uri
      * @param BaseEntity $content
      *
-     * @return bool
+     * @return array
      * @throws TransportExceptionInterface
      */
-    protected function delete(string $uri, BaseEntity $content): array
+    protected function delete(string $uri, ?BaseEntity $content = null): array
     {
         $url = $this->httpClientCreator->getUrl() . $uri;
 
         try {
-            $response = $this->httpClient->request('DELETE', $url, [
+            $options = [
                 'headers' => self::getAuthorizationHeader($url, 'DELETE'),
-                'body' => $content->getXML(),
-            ]);
-
+            ];
+            if ($content !== null) {
+                $options['body'] = $content->getXML();
+            }
+            $response = $this->httpClient->request('DELETE', $url, $options);
+            
             return self::processJsonResponse($response);
         } catch (TransportExceptionInterface $exception) {
             throw $exception;
@@ -106,39 +109,18 @@ abstract class HttpCaller
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    protected function post(string $uri, BaseEntity $content): array
+    protected function post(string $uri, ?BaseEntity $content = null): array
     {
         $url = $this->httpClientCreator->getUrl() . $uri;
         try {
-            $response = $this->httpClient->request('POST', $url, [
+            $options = [
                 'headers' => self::getAuthorizationHeader($url, 'POST'),
-                'body' => $content->getXML(),
-            ]);
-            return self::processJsonResponse($response);
-        } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
-            throw $exception;
-        }
-    }
-
-    /**
-     * Perform POST request.
-     *
-     * @param string $uri
-     *
-     * @return array
-     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
-     * @throws \Pisko\CardMarket\Exception\HttpClientException
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
-     */
-    protected function postNoBody(string $uri): array
-    {
-        $url = $this->httpClientCreator->getUrl() . $uri;
-        try {
-            $response = $this->httpClient->request('POST', $url, [
-                'headers' => self::getAuthorizationHeader($url, 'POST'),
-            ]);
+            ];
+            if ($content !== null) {
+                $options['body'] = $content->getXML();
+            }
+            $response = $this->httpClient->request('POST', $url, $options);
+            
             return self::processJsonResponse($response);
         } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
             throw $exception;
@@ -149,7 +131,7 @@ abstract class HttpCaller
      * Perform PUT request.
      *
      * @param string $uri
-     * @param array $content
+     * @param BaseEntity $content
      *
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
@@ -158,15 +140,18 @@ abstract class HttpCaller
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    protected function put(string $uri, BaseEntity $content): array
+    protected function put(string $uri, ?BaseEntity $content = null): array
     {
         $url = $this->httpClientCreator->getUrl() . $uri;
 
         try {
-            $response = $this->httpClient->request('PUT', $url, [
+            $options = [
                 'headers' => self::getAuthorizationHeader($url, 'PUT'),
-                'body' => $content->getXML(),
-            ]);
+            ];
+            if ($content !== null) {
+                $options['body'] = $content->getXML();
+            }
+            $response = $this->httpClient->request('PUT', $url, $options);
 
             return self::processJsonResponse($response);
         } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
@@ -213,7 +198,7 @@ abstract class HttpCaller
         }
 
         try {
-            $decodedContent = $response->toArray();
+            $decodedContent = empty($response->getContent()) ? [] : $response->toArray();
 
             return array_merge($decodedContent, $this->getApiLimitFromResponseHeaders($response->getHeaders(false)));
         } catch (TransportExceptionInterface | HttpExceptionInterface | HttpServerException | DecodingExceptionInterface $exception) {
@@ -248,7 +233,7 @@ abstract class HttpCaller
     protected function handleErrors(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();
-var_dump($response);
+
         switch ($statusCode) {
           case 204:
             throw HttpClientException::noContent($response);
@@ -265,7 +250,7 @@ var_dump($response);
           case 500 <= $statusCode:
             throw new HttpServerException($statusCode);
           default:
-            throw new UnknownErrorException();
+            throw new UnknownErrorException(json_encode($response->toArray()));
         }
     }
 

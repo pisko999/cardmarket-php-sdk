@@ -6,6 +6,9 @@ namespace Pisko\CardMarket;
 use Pisko\CardMarket\Exception\NonExistsResourceException;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use Pisko\CardMarket\Resources\AccountManagement\MessagesResource;
+use Pisko\CardMarket\Resources\AccountManagement\AccountResource;
+use Pisko\CardMarket\Resources\AccountManagement\CouponResource;
+use Pisko\CardMarket\Resources\CartManagement\CartResource;
 use Pisko\CardMarket\Resources\HttpCaller;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ArticlesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
@@ -14,6 +17,7 @@ use Pisko\CardMarket\Resources\MarketPlaceInformation\MetaproductsResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\PricesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\UsersResource;
+use Pisko\CardMarket\Resources\MKMServices\CaptchaResource;
 use Pisko\CardMarket\Resources\OrdersManagement\OrdersResource;
 use Pisko\CardMarket\Resources\StockManagement\AddArticleStockResource;
 use Pisko\CardMarket\Resources\StockManagement\DeleteArticleStockResource;
@@ -119,6 +123,27 @@ class Cardmarket
     {
         return $this->getResource(UsersResource::class);
     }
+
+    public function account(): AccountResource
+    {
+        return $this->getResource(AccountResource::class);
+    }
+
+    public function coupon(): CouponResource
+    {
+        return $this->getResource(CouponResource::class);
+    }
+
+    public function cart(): CartResource
+    {
+        return $this->getResource(CartResource::class);
+    }
+
+    // no longer used
+    // public function captcha(): CaptchaResource
+    // {
+    //     return $this->getResource(CaptchaResource::class);
+    // }
 
     /**
      * Register custom resources on Cardmarket wrapper.

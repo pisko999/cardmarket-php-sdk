@@ -52,7 +52,7 @@ final class MetaproductsResource extends HttpCaller
             'idLanguage' => 'int'
         ];
 
-        $data = ['search' => str_replace(' ', '', $search)];
+        $data = ['search' => isset($searchData['exact']) && $searchData['exact'] ? $search : str_replace(' ', '', $search)];
 
         $data += $this->setUpOptionalParameters($searchData, $optional);
 

@@ -5,7 +5,7 @@ namespace Pisko\CardMarket\Resources\AccountManagement;
 use Pisko\CardMarket\Entities\MessageEntity;
 use Pisko\CardMarket\Exception\HttpClientException;
 use Pisko\CardMarket\Resources\HttpCaller;
-use pq\DateTime;
+use DateTime;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use function PHPUnit\Framework\isInstanceOf;
 
@@ -38,16 +38,16 @@ final class MessagesResource extends HttpCaller
      * Returns a specified message with a specified other user.
      *
      * @param int $idOtherUser
-     * @param int $idMessage
+     * @param string $idMessage
      * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function getMessageByUser(int $idOtherUser, int $idMessage): array
+    public function getMessageByUser(int $idOtherUser, string $idMessage): array
     {
-        return $this->get(sprintf('/account/messages/%d/%d', $idOtherUser, $idMessage));
+        return $this->get(sprintf('/account/messages/%d/%s', $idOtherUser, $idMessage));
     }
 
 
@@ -97,7 +97,7 @@ final class MessagesResource extends HttpCaller
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function deleteMessagesByUser(int $idOtherUser): bool
+    public function deleteMessagesByUser(int $idOtherUser): array
     {
         return $this->delete(sprintf('/account/messages/%d', $idOtherUser));
     }
@@ -107,16 +107,16 @@ final class MessagesResource extends HttpCaller
      * Deletes a specified message to a specified other user.
      *
      * @param int $idOtherUser
-     * @param int $idMessage
+     * @param string $idMessage
      * @return bool
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function deleteOneMessageByUser(int $idOtherUser, int $idMessage): bool
+    public function deleteOneMessageByUser(int $idOtherUser, string $idMessage): array
     {
-        return $this->delete(sprintf('/account/messages/%d/%d', $idOtherUser, $idMessage));
+        return $this->delete(sprintf('/account/messages/%d/%s', $idOtherUser, $idMessage));
     }
 
 
@@ -138,13 +138,13 @@ final class MessagesResource extends HttpCaller
             $data['unread'] = 'true';
         } else {
             if ($startDate) {
-                $data['startDate'] = $startDate;
+                $data['startDate'] = $startDate->format('Y-m-d');
             }
             if ($endDate) {
-                $data['endDate'] = $endDate;
+                $data['endDate'] = $endDate->format('Y-m-d');
             }
         }
-
+        
         return $this->get(sprintf('/account/messages/find?%s', http_build_query($data)));
     }
 }

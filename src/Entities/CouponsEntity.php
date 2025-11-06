@@ -2,7 +2,17 @@
 
 namespace Pisko\CardMarket\Entities;
 
- abstract class CouponsEntity extends MultipleEntity
+class CouponsEntity extends MultipleEntity
 {
-    protected string $childEntity = ArticleEntity::class;
+    protected string $childEntity = CouponEntity::class;
+
+    public function __construct(array $entities)
+    {
+        parent::__construct($entities);
+    }
+    
+    public function getMe(array $entities): MultipleEntity
+    {
+        return new self($entities);
+    }
 }

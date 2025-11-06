@@ -2,6 +2,7 @@
 
 namespace Pisko\CardMarket\Resources;
 
+use Pisko\CardMarket\Entities\BaseEntity;
 use Pisko\CardMarket\Entities\MultipleEntity;
 use Pisko\CardMarket\Enums\HttpMethods;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
@@ -19,13 +20,18 @@ abstract class ModelMultipleResource extends HttpCaller
         parent::__construct($httpClientCreator);
     }
 
-    public function add(array $data, bool $async = false): array
+    // TODO: Implement posibility to add entity as object
+    public function add(MultipleEntity|array $data, bool $async = false): array
     {
-        if(isset($this->entity))
-        {
+        if ($data instanceof $this->className) {
+            $this->entity = $data;
+        } elseif (isset($this->entity)) {
             $this->entity->parseAdd($data);
-        } else {
+        } elseif (is_array($data)) {
             $this->entity = new $this->className($data);
+        } else {
+            die;
+            throw new \InvalidArgumentException('Data must be an instance of BaseEntity, MultipleEntity or an array.');
         }
 
         if ($this->entity->getCount() >= 100 || !$async)

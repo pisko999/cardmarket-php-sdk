@@ -29,7 +29,7 @@ final class StockExportResource extends HttpCaller
         if ($idGame) {
             $url .= '?idGame=' . $idGame;
         }
-        return $this->postNoBody($url);
+        return $this->post($url);
     }
 
     public function getStockExportStatus(): array

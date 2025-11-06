@@ -71,7 +71,7 @@ final class ProductsResource extends HttpCaller
             'idLanguage' => 'int'
         ];
 
-        $data = ['search' => str_replace(' ', '', $search)];
+        $data = ['search' => isset($searchData['exact']) && $searchData['exact'] ? $search : str_replace(' ', '', $search)];
         $data['start'] = $start;
         $data['maxResults'] = $maxResults;
 

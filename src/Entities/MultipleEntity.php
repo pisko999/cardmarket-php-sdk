@@ -15,9 +15,11 @@ abstract class MultipleEntity extends BaseEntity
      *
      * @param array $entities
      */
-    public function __construct(array $entities)
+    public function __construct(BaseEntity|array $entities)
     {
-        if(reset($entities) instanceof BaseEntity) {
+        if ($entities instanceof BaseEntity) {
+            $this->entities[] = $entities;
+        } elseif (is_array($entities) && reset($entities) instanceof BaseEntity) {
             $this->entities = $entities;
         } else {
             foreach ($entities as $entity) {
@@ -90,6 +92,7 @@ abstract class MultipleEntity extends BaseEntity
     {
         $ret = '<?xml version="1.0" encoding="UTF-8" ?>' .
             '<request>';
+        $ret .= $this->getAditionalXML();
         foreach ($this->entities as $entity) {
             $ret .= $entity->getPureXML();
         }
@@ -108,6 +111,25 @@ abstract class MultipleEntity extends BaseEntity
     public function getBatch(): self
     {
         return $this->getMe(array_splice($this->entities, 0, 100));
+    }
+
+    protected function getAditionalXML(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return class-string<BaseEntity>
+     */
+    public function getChildEntityClassname(): string
+    {
+        if (empty($this->childEntity)) {
+            throw new \LogicException('Child entity class name is not set.');
+        }
+        if (!class_exists($this->childEntity)) {
+            throw new \LogicException('Child entity class does not exist: ' . $this->childEntity);
+        }
+        return $this->childEntity::class;
     }
 
     public abstract function getMe(array $entities): self;

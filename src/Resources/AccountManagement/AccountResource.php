@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-namespace Pisko\CardMarket\Resources\AcountManagement;
+namespace Pisko\CardMarket\Resources\AccountManagement;
 
 use Pisko\CardMarket\Resources\HttpCaller;
 
@@ -49,7 +50,7 @@ final class AccountResource extends HttpCaller
         $data['onVacation'] = $onVacation ? 'true' : 'false';
 
         $data += $this->setUpOptionalParameters($setData, $optional);
-        return $this->put(sprintf('/account/vacation?%s', http_build_query($data)), []);
+        return $this->put(sprintf('/account/vacation?%s', http_build_query($data)));
     }
 
 
@@ -67,6 +68,6 @@ final class AccountResource extends HttpCaller
     {
         $data['idDisplayLanguage'] = $idDisplayLanguage;
 
-        return $this->put(sprintf('/account/language?%s', http_build_query($data)), []);
+        return $this->put(sprintf('/account/language?%s', http_build_query($data)));
     }
 }

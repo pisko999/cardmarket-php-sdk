@@ -4,6 +4,6 @@ namespace Pisko\CardMarket\Exception;
 
 use Pisko\CardMarket\CardMarketException;
 
-final class UnknownErrorException extends \Exception implements CardMarketException
+final class NonExistsResourceException extends \Exception implements CardMarketException
 {
 }

@@ -40,6 +40,12 @@ abstract class BaseEntity
             $this->getPureXML() .
             '</request>';
     }
+    
+    /**
+     * Return entity as array
+     *
+     * @return array
+     */
     public function getArray(): array
     {
         return [];
