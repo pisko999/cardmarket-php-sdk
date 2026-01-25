@@ -6,3 +6,4 @@
 vendor
 build
 .infection/
+e2e/.env

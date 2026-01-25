@@ -46,6 +46,13 @@
             "@cs-check",
             "@stan",
             "@test"
-        ]
+        ],
+        "e2e": "php e2e/run-tests.php",
+        "e2e:games": "php e2e/run-tests.php --suite=games",
+        "e2e:products": "php e2e/run-tests.php --suite=products",
+        "e2e:stock": "php e2e/run-tests.php --suite=stock",
+        "e2e:orders": "php e2e/run-tests.php --suite=orders",
+        "e2e:wantslists": "php e2e/run-tests.php --suite=wantslists",
+        "e2e:account": "php e2e/run-tests.php --suite=account"
     }
 }
