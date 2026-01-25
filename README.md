@@ -230,10 +230,11 @@ $response = $cardmarket->updateArticleStock()->add([$article->getArray()]);
 #### Changing Quantities
 
 ```php
-// Increase or decrease article quantity
-$response = $cardmarket->stock()->changeQuantity([
-    ['idArticle' => 142158699, 'count' => 2] // Add 2 to existing count
-]);
+// Increase article quantity
+$response = $cardmarket->stock()->increaseStock(142158699, 2); // Add 2 to existing count
+
+// Decrease article quantity
+$response = $cardmarket->stock()->decreaseStock(142158699, 1); // Remove 1 from count
 ```
 
 #### Deleting Articles
@@ -279,28 +280,25 @@ $order = $cardmarket->orders()->getOrder(123456);
 // Change order state
 use Pisko\CardMarket\Entities\OrderChangeStateEntity;
 
-$stateChange = new OrderChangeStateEntity(
+$cardmarket->orders()->changeOrderState(
+    123456,                                  // Order ID
     OrderChangeStateEntity::STATE_CHANGE_SEND // Mark as sent
 );
-$cardmarket->orders()->changeOrderState(123456, $stateChange);
 
 // Add tracking number
-use Pisko\CardMarket\Entities\TrackingNumberEntity;
-
-$tracking = new TrackingNumberEntity('1Z999AA10123456784');
-$cardmarket->orders()->setTrackingNumber(123456, $tracking);
+$cardmarket->orders()->setOrderTrackingNumber(123456, '1Z999AA10123456784');
 
 // Evaluate order
 use Pisko\CardMarket\Entities\EvaluationEntity;
 
-$evaluation = new EvaluationEntity(
-    EvaluationEntity::GRADE_VERY_GOOD,  // Overall grade
-    EvaluationEntity::GRADE_VERY_GOOD,  // Item description accuracy
-    EvaluationEntity::GRADE_VERY_GOOD,  // Packaging quality
-    'Great seller, fast shipping!',     // Comment
-    []                                   // Complaints (empty array)
+$cardmarket->orders()->evaluateOrder(
+    123456,                            // Order ID
+    EvaluationEntity::GRADE_VERY_GOOD, // Overall grade
+    EvaluationEntity::GRADE_VERY_GOOD, // Item description accuracy
+    EvaluationEntity::GRADE_VERY_GOOD, // Packaging quality
+    'Great seller, fast shipping!',    // Comment
+    []                                 // Complaints (empty array)
 );
-$cardmarket->orders()->evaluateOrder(123456, $evaluation);
 ```
 
 #### Order States
@@ -386,21 +384,16 @@ $cardmarket->wantslist()->deleteItemsFromWantsList(211682, $items);
 // Get current cart
 $cart = $cardmarket->cart()->getCart();
 
-// Add articles to cart
-use Pisko\CardMarket\Entities\CartArticlesEntity;
-
-$cartArticles = new CartArticlesEntity([
+// Add articles to cart (simple method)
+$cardmarket->cart()->addToCart([
     ['idArticle' => 123456, 'amount' => 1],
     ['idArticle' => 123457, 'amount' => 2]
 ]);
-$cardmarket->cart()->add($cartArticles);
-$cardmarket->cart()->setAction('add');
-$cardmarket->cart()->send();
 
-// Remove articles from cart
-$cardmarket->cart()->add($cartArticles);
-$cardmarket->cart()->setAction('remove');
-$cardmarket->cart()->send();
+// Remove articles from cart (simple method)
+$cardmarket->cart()->removeFromCart([
+    ['idArticle' => 123456, 'amount' => 1]
+]);
 
 // Empty entire cart
 $cardmarket->cart()->emptyCart();
@@ -419,13 +412,10 @@ $address = new CartAddressEntity(
     'Prague',             // city
     'CZ'                  // country code
 );
-$cardmarket->cart()->changeShippingAddress(12345, $address);
+$cardmarket->cart()->setCartAddress($address);
 
-// Change shipping method
-use Pisko\CardMarket\Entities\ShippingMethodEntity;
-
-$shipping = new ShippingMethodEntity(2); // shipping method ID
-$cardmarket->cart()->changeShippingMethod(12345, $shipping);
+// Change shipping method (idReservation from cart response)
+$cardmarket->cart()->setShippingMethod($idReservation, 2); // 2 = shipping method ID
 ```
 
 ### Account Management
@@ -441,18 +431,19 @@ $user = $cardmarket->users()->getUser('Username');
 $users = $cardmarket->users()->findUsers('searchterm');
 
 // Messages
-$threads = $cardmarket->messages()->getMessageThreads();
-$thread = $cardmarket->messages()->getMessageThread(123);
+$threads = $cardmarket->messages()->getMessagesThread();
+$thread = $cardmarket->messages()->getMessagesThreadByUser(123); // 123 = idOtherUser
 
 // Send message
 use Pisko\CardMarket\Entities\MessageEntity;
 
 $message = new MessageEntity('Hello, I have a question about my order.');
-$cardmarket->messages()->sendMessageToUser(123, $message);
+$cardmarket->messages()->sendMessage(123, $message); // 123 = idOtherUser
 
 // Coupons
-$coupons = $cardmarket->coupon()->getCoupons();
-$cardmarket->coupon()->redeemCoupon('COUPON-CODE');
+$cardmarket->coupon()->redeemCoupons('COUPON-CODE');
+// Or redeem multiple coupons
+$cardmarket->coupon()->redeemCoupons(['COUPON-1', 'COUPON-2']);
 ```
 
 ## Batch Operations
@@ -673,7 +664,7 @@ $expensiveCards = $cardmarket->custom()->getExpensiveCards(1);
 
 #### Fixed Bugs
 
-- Fixed wrong endpoint in `getStockArticlesOfProduct()` (`/stock/%d` → `/stock/product/%d`)
+- Fixed wrong endpoint in `getStockArticlesOfProduct()` (`/stock/%d` → `/stock/products/%d`)
 - Fixed switch case bug in HTTP error handling
 - Fixed `hasError()` return type (`int` → `bool`)
 - Added XML escaping to all entity XML outputs for security
