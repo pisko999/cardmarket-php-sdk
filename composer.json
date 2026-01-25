@@ -1,5 +1,5 @@
 {
-    "name": "pisko/cardmarket-php-sdk",
+    "name": "pisko999/cardmarket-php-sdk",
     "description": "Wrap Cardmarket API with PHP",
     "keywords": ["api", "wrapper", "cardmarket", "cardmarket-php-sdk", "sdk"],
     "license": "MIT",
@@ -31,16 +31,21 @@
     "require-dev": {
         "phpunit/phpunit": "^9.5.10",
         "symfony/var-dumper": "^5.1",
-        "friendsofphp/php-cs-fixer": "^2.16",
+        "friendsofphp/php-cs-fixer": "^3.65",
         "dg/bypass-finals": "^1.2",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "^2.1"
     },
     "scripts": {
-        "lint": "php-cs-fixer fix ./src --rules=@PSR2 --diff --dry-run",
-        "lint-fix": "php-cs-fixer fix ./src --rules=@PSR2",
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
         "test": "vendor/bin/phpunit",
         "stan": "vendor/bin/phpstan analyse",
         "test-coverage": "vendor/bin/phpunit --coverage-text --coverage-clover=build/coverage.xml",
-        "test-coverage-html": "vendor/bin/phpunit --coverage-text --coverage-html=build"
+        "test-coverage-html": "vendor/bin/phpunit --coverage-text --coverage-html=build",
+        "check": [
+            "@cs-check",
+            "@stan",
+            "@test"
+        ]
     }
 }

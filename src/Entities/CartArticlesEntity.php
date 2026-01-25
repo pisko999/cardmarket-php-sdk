@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Entities;
 
 class CartArticlesEntity extends MultipleEntity
@@ -9,6 +11,7 @@ class CartArticlesEntity extends MultipleEntity
     private string $action = '';
 
     public const ACTION_ADD = 'add';
+
     public const ACTION_REMOVE = 'remove';
 
     public function __construct(BaseEntity|array $entities)
@@ -25,12 +28,17 @@ class CartArticlesEntity extends MultipleEntity
 
         // Set action
         $this->action = $action;
+
         return true;
     }
 
+    public function getAction(): ?string
+    {
+        return $this->action ?: null;
+    }
 
     /**
-     * Return entity as Request XML
+     * Return entity as Request XML.
      *
      * @return string
      */
@@ -39,6 +47,7 @@ class CartArticlesEntity extends MultipleEntity
         if (empty($this->action)) {
             throw new \LogicException('Action must be set before generating XML.');
         }
+
         return '<action>' . $this->action . '</action>';
     }
 
@@ -46,27 +55,34 @@ class CartArticlesEntity extends MultipleEntity
     {
         $me = new self($entities);
         $me->action = $this->action; // Preserve action for the new instance
+
         return $me;
     }
 
     public function getIdsChange(): array
     {
-        return array_map(function(ArticleEntity $r){return $r->getIdChange();},$this->entities);
+        return array_map(function (ArticleEntity $r) {
+            return $r->getIdChange();
+        }, $this->entities);
     }
 
     public function getIdsChangeWithoutError(): array
     {
-        return array_map(function(ArticleEntity $r){return $r->getIdChange();},$this->getEntitiesWithoutError());
+        return array_map(function (ArticleEntity $r) {
+            return $r->getIdChange();
+        }, $this->getEntitiesWithoutError());
     }
 
     public function getEntitiesWithoutError(): array
     {
-        return array_filter($this->entities, function(ArticleEntity $r) {return !$r->hasError();});
+        return array_filter($this->entities, function (ArticleEntity $r) {
+            return !$r->hasError();
+        });
     }
 
     public function getEntityByTried(array $data): array
     {
-        return array_filter($this->getEntitiesWithoutError(), function(ArticleEntity $r) use ($data) {
+        return array_filter($this->getEntitiesWithoutError(), function (ArticleEntity $r) use ($data) {
             return $r->isMe($data);
         });
     }

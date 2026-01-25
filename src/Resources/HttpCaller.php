@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Resources;
@@ -9,7 +10,6 @@ use Pisko\CardMarket\Exception\HttpClientException;
 use Pisko\CardMarket\Exception\HttpServerException;
 use Pisko\CardMarket\Exception\UnknownErrorException;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
-use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -17,9 +17,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
- * Class HttpCaller
+ * Class HttpCaller.
  *
- * @package Pisko\CardMarket\Resources
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */
@@ -46,12 +45,13 @@ abstract class HttpCaller
      *
      * @param string $uri
      *
+     * @throws UnknownErrorException
+     * @throws HttpClientException
+     * @throws DecodingExceptionInterface
+     * @throws HttpExceptionInterface
+     * @throws TransportExceptionInterface
+     *
      * @return array
-     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
-     * @throws \Pisko\CardMarket\Exception\HttpClientException
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function get(string $uri): array
     {
@@ -74,8 +74,9 @@ abstract class HttpCaller
      * @param string $uri
      * @param BaseEntity $content
      *
-     * @return array
      * @throws TransportExceptionInterface
+     *
+     * @return array
      */
     protected function delete(string $uri, ?BaseEntity $content = null): array
     {
@@ -89,7 +90,7 @@ abstract class HttpCaller
                 $options['body'] = $content->getXML();
             }
             $response = $this->httpClient->request('DELETE', $url, $options);
-            
+
             return self::processJsonResponse($response);
         } catch (TransportExceptionInterface $exception) {
             throw $exception;
@@ -102,16 +103,18 @@ abstract class HttpCaller
      * @param string $uri
      * @param BaseEntity $content
      *
+     * @throws UnknownErrorException
+     * @throws HttpClientException
+     * @throws DecodingExceptionInterface
+     * @throws HttpExceptionInterface
+     * @throws TransportExceptionInterface
+     *
      * @return array
-     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
-     * @throws \Pisko\CardMarket\Exception\HttpClientException
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function post(string $uri, ?BaseEntity $content = null): array
     {
         $url = $this->httpClientCreator->getUrl() . $uri;
+
         try {
             $options = [
                 'headers' => self::getAuthorizationHeader($url, 'POST'),
@@ -120,7 +123,7 @@ abstract class HttpCaller
                 $options['body'] = $content->getXML();
             }
             $response = $this->httpClient->request('POST', $url, $options);
-            
+
             return self::processJsonResponse($response);
         } catch (UnknownErrorException | DecodingExceptionInterface | HttpExceptionInterface | TransportExceptionInterface $exception) {
             throw $exception;
@@ -133,12 +136,13 @@ abstract class HttpCaller
      * @param string $uri
      * @param BaseEntity $content
      *
+     * @throws UnknownErrorException
+     * @throws HttpClientException
+     * @throws DecodingExceptionInterface
+     * @throws HttpExceptionInterface
+     * @throws TransportExceptionInterface
+     *
      * @return array
-     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
-     * @throws \Pisko\CardMarket\Exception\HttpClientException
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function put(string $uri, ?BaseEntity $content = null): array
     {
@@ -176,16 +180,16 @@ abstract class HttpCaller
         ];
     }
 
-
     /**
-     * @param \Symfony\Contracts\HttpClient\ResponseInterface $response
+     * @param ResponseInterface $response
+     *
+     * @throws UnknownErrorException
+     * @throws HttpClientException
+     * @throws DecodingExceptionInterface
+     * @throws HttpExceptionInterface
+     * @throws TransportExceptionInterface
      *
      * @return array
-     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
-     * @throws \Pisko\CardMarket\Exception\HttpClientException
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function processJsonResponse(ResponseInterface $response): array
     {
@@ -217,67 +221,75 @@ abstract class HttpCaller
     {
         return [
           'api' => [
-              'request-limit-max' => $headers['x-request-limit-max'][0],
-              'request-limit-count' => $headers['x-request-limit-count'][0],
-            ]
+              'request-limit-max' => $headers['x-request-limit-max'][0] ?? null,
+              'request-limit-count' => $headers['x-request-limit-count'][0] ?? null,
+            ],
         ];
     }
 
     /**
-     * @param \Symfony\Contracts\HttpClient\ResponseInterface $response
+     * @param ResponseInterface $response
      *
-     * @throws \Pisko\CardMarket\Exception\UnknownErrorException
-     * @throws \Pisko\CardMarket\Exception\HttpClientException
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws UnknownErrorException
+     * @throws HttpClientException
+     * @throws TransportExceptionInterface
      */
     protected function handleErrors(ResponseInterface $response): void
     {
         $statusCode = $response->getStatusCode();
 
         switch ($statusCode) {
-          case 204:
-            throw HttpClientException::noContent($response);
-          case 400:
-            throw HttpClientException::badRequest($response);
-          case 401:
-            throw HttpClientException::unauthorized($response);
-          case 403:
-            throw HttpClientException::forbidden($response);
-          case 404:
-            throw HttpClientException::notFound($response);
-          case 429:
-            throw HttpClientException::tooManyRequests($response);
-          case 500 <= $statusCode:
-            throw new HttpServerException($statusCode);
-          default:
-            throw new UnknownErrorException(json_encode($response->toArray()));
+            case 204:
+                throw HttpClientException::noContent($response);
+            case 400:
+                throw HttpClientException::badRequest($response);
+            case 401:
+                throw HttpClientException::unauthorized($response);
+            case 403:
+                throw HttpClientException::forbidden($response);
+            case 404:
+                throw HttpClientException::notFound($response);
+            case 429:
+                throw HttpClientException::tooManyRequests($response);
+            default:
+                if ($statusCode >= 500) {
+                    throw new HttpServerException($statusCode);
+                }
+
+                throw new UnknownErrorException(json_encode($response->toArray()));
         }
     }
 
     /**
-     * Set up required and optional parameters
+     * Set up required and optional parameters.
      *
      * @param array $data
      * @param array $optional
+     *
      * @return array
      */
-    protected function setUpOptionalParameters(array $data, array $optional): array {
+    protected function setUpOptionalParameters(array $data, array $optional): array
+    {
         $output = [];
         foreach ($optional as $key => $value) {
-            if(isset($data[$key])) {
+            if (isset($data[$key])) {
                 $output[$key] = $this->setDataKey($data[$key], $value);
             }
         }
+
         return $output;
     }
 
     /**
-     * Set one dataKey
+     * Set one dataKey.
+     *
      * @param mixed $data
      * @param string $type
+     *
      * @return mixed
      */
-    private function setDataKey(mixed $data, string $type): mixed {
+    private function setDataKey(mixed $data, string $type): mixed
+    {
         if ($type === 'bool') {
             return $data ? 'true' : 'false';
         } else {

@@ -1,15 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Resources\MarketPlaceInformation;
 
-use Pisko\CardMarket\Entities\RequestUserOffersEntity;
 use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
- * Class UsersResource
+ * Class UsersResource.
  *
- * @package Pisko\CardMarket\Resources\MarketPlaceInformation
  *
  * @author Petr Spinar <spinarp@gmail.com>
  */
@@ -19,11 +18,13 @@ final class UsersResource extends HttpCaller
      * Returns a user specified by its ID or EXACT NAME.
      *
      * @param int|string $user
-     * @return array
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function getUserDetails(int|string $user): array
     {
@@ -31,30 +32,35 @@ final class UsersResource extends HttpCaller
     }
 
     /**
-     * Find user by name
+     * Find user by name.
      *
      * @param string $search
-     * @return array
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function findUsers(string $search): array
     {
         $data = ['search' => str_replace(' ', '', $search)];
+
         return $this->get(sprintf('/users/find?%s', http_build_query($data)));
     }
 
     /**
-     * Request export of user offers
+     * Request export of user offers.
      *
      * @param int $idUser
-     * @return array
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function requestExportUserOffersById(int $idUser): array
     {
@@ -62,14 +68,16 @@ final class UsersResource extends HttpCaller
     }
 
     /**
-     * Get requested user offers by ID
+     * Get requested user offers by ID.
      *
      * @param int $idUser
-     * @return array
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function getRequestedUserOffersById(int $idUser): array
     {
@@ -77,13 +85,14 @@ final class UsersResource extends HttpCaller
     }
 
     /**
-     * Get export user offers list
+     * Get export user offers list.
      *
-     * @return array
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function getExportUserOffersList(): array
     {

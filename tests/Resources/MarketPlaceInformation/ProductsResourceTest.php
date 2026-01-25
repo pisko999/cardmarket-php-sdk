@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Tests\Resources\MarketPlaceInformation;
 
-use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
 use Pisko\CardMarket\Tests\ResourceTestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 class ProductsResourceTest extends ResourceTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -31,19 +31,21 @@ class ProductsResourceTest extends ResourceTestCase
         $propertiesToCheck = ['idProduct', 'countReprints', 'enName', 'image', 'gameName', 'idGame', 'number', 'rarity',
             'priceGuide', 'countArticles', 'countFoils'];
 
-        foreach($propertiesToCheck as $keyName) {
+        foreach ($propertiesToCheck as $keyName) {
             $this->assertArrayHasKey($keyName, $response['product']);
         }
     }
 
     public function testRetrieveProductListFile()
     {
-        $mockResponse = new MockResponse(file_get_contents(sprintf(__DIR__ . "/../MockResponse/productList.json")), [
+        $mockResponse = new MockResponse(
+            file_get_contents(sprintf(__DIR__ . '/../MockResponse/productList.json')),
+            [
                 'response_headers' => [
                     'X-Request-Limit-Max' => 5000,
                     'X-Request-Limit-Count' => 1,
-                ]
-            ]
+                ],
+            ],
         );
 
         $this->setupHttpClientCreatorMock([$mockResponse]);
@@ -64,19 +66,20 @@ class ProductsResourceTest extends ResourceTestCase
 
     public function testFindProducts()
     {
-        $mockResponse = new MockResponse(file_get_contents(sprintf(__DIR__ . "/../MockResponse/findProducts_pernicious_deed.json")), [
+        $mockResponse = new MockResponse(
+            file_get_contents(sprintf(__DIR__ . '/../MockResponse/findProducts_pernicious_deed.json')),
+            [
                 'response_headers' => [
                     'X-Request-Limit-Max' => 5000,
                     'X-Request-Limit-Count' => 7,
-                ]
-            ]
+                ],
+            ],
         );
 
         $this->setupHttpClientCreatorMock([$mockResponse]);
         $productsResource = new ProductsResource($this->httpClientCreatorMock);
 
-        $response = $productsResource->findProducts("perinici");
-
+        $response = $productsResource->findProducts('perinici');
 
         $this->assertArrayHasKey('product', $response);
         $this->assertArrayHasKey('api', $response);
@@ -87,7 +90,7 @@ class ProductsResourceTest extends ResourceTestCase
         $propertiesToCheck = ['idProduct', 'countReprints', 'enName', 'image', 'gameName', 'idGame', 'number', 'rarity',
             'countArticles', 'countFoils'];
 
-        for($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             foreach ($propertiesToCheck as $keyName) {
                 $this->assertArrayHasKey($keyName, $response['product'][$i]);
             }
@@ -97,15 +100,15 @@ class ProductsResourceTest extends ResourceTestCase
     protected function getMockResponses(): array
     {
         return [
-          new MockResponse(file_get_contents(__DIR__ . "/../MockResponse/product_273799.json"),
-            [
+          new MockResponse(
+              file_get_contents(__DIR__ . '/../MockResponse/product_273799.json'),
+              [
                 'response_headers' => [
                   'X-Request-Limit-Max' => 5000,
                   'X-Request-Limit-Count' => 1,
-                ]
-            ]
-          )
+                ],
+            ],
+          ),
         ];
     }
-
 }

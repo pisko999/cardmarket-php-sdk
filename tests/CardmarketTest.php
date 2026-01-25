@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Pisko\CardMarket\Cardmarket;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
@@ -10,11 +12,9 @@ use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
 use Pisko\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
 use Pisko\CardMarket\Resources\StockManagement\StockResource;
-use PHPUnit\Framework\TestCase;
 
 class CardmarketTest extends TestCase
 {
-
     private $cardmarket;
 
     public function setUp(): void
@@ -37,12 +37,12 @@ class CardmarketTest extends TestCase
     public function testToRegisterDefaultResource()
     {
         $this->expectException(\LogicException::class);
-        $this->cardmarket->registerResources("games", \stdClass::class);
+        $this->cardmarket->registerResources('games', \stdClass::class);
     }
 
     public function testToRegisterNewResource()
     {
-        $this->cardmarket->registerResources("new", \stdClass::class);
+        $this->cardmarket->registerResources('new', \stdClass::class);
         $this->assertInstanceOf(\stdClass::class, $this->cardmarket->new());
     }
 
@@ -51,5 +51,4 @@ class CardmarketTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
         $this->cardmarket->fake();
     }
-
 }

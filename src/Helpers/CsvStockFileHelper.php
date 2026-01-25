@@ -1,12 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Helpers;
 
 /**
- * Class CsvStockFileHelper
+ * Class CsvStockFileHelper.
  *
- * @package Pisko\CardMarket\Helper
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */

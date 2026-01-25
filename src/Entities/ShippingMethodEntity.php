@@ -1,25 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Entities;
 
 class ShippingMethodEntity extends BaseEntity
 {
     private int $idShippingMethod;
 
-
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param string $coupon
+     * @param int $idShippingMethod
      */
     public function __construct(int $idShippingMethod)
     {
+        parent::__construct();
         $this->idShippingMethod = $idShippingMethod;
     }
 
-
     /**
-     * Return entity as XML
+     * Return entity as XML.
      *
      * @return string
      */
@@ -27,5 +28,4 @@ class ShippingMethodEntity extends BaseEntity
     {
         return '<idShippingMethod>' . $this->idShippingMethod . '</idShippingMethod>';
     }
-
 }

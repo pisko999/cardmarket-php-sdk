@@ -1,15 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket;
 
 use Pisko\CardMarket\Exception\NonExistsResourceException;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
-use Pisko\CardMarket\Resources\AccountManagement\MessagesResource;
 use Pisko\CardMarket\Resources\AccountManagement\AccountResource;
 use Pisko\CardMarket\Resources\AccountManagement\CouponResource;
+use Pisko\CardMarket\Resources\AccountManagement\MessagesResource;
 use Pisko\CardMarket\Resources\CartManagement\CartResource;
-use Pisko\CardMarket\Resources\HttpCaller;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ArticlesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
@@ -17,7 +17,6 @@ use Pisko\CardMarket\Resources\MarketPlaceInformation\MetaproductsResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\PricesResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ProductsResource;
 use Pisko\CardMarket\Resources\MarketPlaceInformation\UsersResource;
-use Pisko\CardMarket\Resources\MKMServices\CaptchaResource;
 use Pisko\CardMarket\Resources\OrdersManagement\OrdersResource;
 use Pisko\CardMarket\Resources\StockManagement\AddArticleStockResource;
 use Pisko\CardMarket\Resources\StockManagement\DeleteArticleStockResource;
@@ -25,12 +24,12 @@ use Pisko\CardMarket\Resources\StockManagement\StockExportResource;
 use Pisko\CardMarket\Resources\StockManagement\StockInShoppingCartsResource;
 use Pisko\CardMarket\Resources\StockManagement\StockResource;
 use Pisko\CardMarket\Resources\StockManagement\UpdateArticleStockResource;
+use Pisko\CardMarket\Resources\WantsListManagement\WantsListResource;
 use Spatie\Macroable\Macroable;
 
 /**
- * Class Cardmarket
+ * Class Cardmarket.
  *
- * @package Pisko\CardMarket
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  * @author Petr Spinar <spinarp@gmail.com>
@@ -109,7 +108,7 @@ class Cardmarket
         return $this->getResource(StockResource::class);
     }
 
-    public function StockExport(): StockExportResource
+    public function stockExport(): StockExportResource
     {
         return $this->getResource(StockExportResource::class);
     }
@@ -139,11 +138,10 @@ class Cardmarket
         return $this->getResource(CartResource::class);
     }
 
-    // no longer used
-    // public function captcha(): CaptchaResource
-    // {
-    //     return $this->getResource(CaptchaResource::class);
-    // }
+    public function wantslist(): WantsListResource
+    {
+        return $this->getResource(WantsListResource::class);
+    }
 
     /**
      * Register custom resources on Cardmarket wrapper.
@@ -167,24 +165,45 @@ class Cardmarket
     /**
      * Default methods names to access Cardmarket Resources.
      *
-     * @return array
+     * @return array<string>
      */
     private function getDefaultResources(): array
     {
-        return ["games", "expansions", "cards", "stock", "stockInShoppingCarts"];
+        return [
+            'messages',
+            'articles',
+            'addArticleStock',
+            'updateArticleStock',
+            'deleteArticleStock',
+            'games',
+            'expansions',
+            'metaproducts',
+            'orders',
+            'prices',
+            'products',
+            'stock',
+            'stockExport',
+            'stockInShoppingCarts',
+            'users',
+            'account',
+            'coupon',
+            'cart',
+            'wantslist',
+        ];
     }
-
 
     /**
      * @throws NonExistsResourceException
      */
-    private function getResource(string $name): mixed {
+    private function getResource(string $name): mixed
+    {
         if (!class_exists($name)) {
             throw new NonExistsResourceException();
         }
         if (!isset($this->resources[$name])) {
             $this->resources[$name] = new $name($this->httpClientCreator);
         }
+
         return $this->resources[$name];
     }
 }

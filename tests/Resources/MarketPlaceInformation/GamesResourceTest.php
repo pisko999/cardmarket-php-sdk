@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Tests\Resources;
 
 use Pisko\CardMarket\Resources\MarketPlaceInformation\GamesResource;
@@ -8,7 +10,6 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 class GamesResourceTest extends ResourceTestCase
 {
-
     /**
      * @var GamesResource
      */
@@ -36,18 +37,18 @@ class GamesResourceTest extends ResourceTestCase
 
     protected function getMockResponses(): array
     {
-        $bodyValidGame = file_get_contents(__DIR__ . "/../MockResponse/game.json");
+        $bodyValidGame = file_get_contents(__DIR__ . '/../MockResponse/game.json');
 
         return [
-          new MockResponse($bodyValidGame,
-            [
+          new MockResponse(
+              $bodyValidGame,
+              [
                 'response_headers' => [
                   'X-Request-Limit-Max' => 5000,
                   'X-Request-Limit-Count' => 10,
-                ]
-            ]
-          )
+                ],
+            ],
+          ),
         ];
     }
-
 }

@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Tests\HttpClient;
 
+use PHPUnit\Framework\TestCase;
 use Pisko\CardMarket\Exception\HttpClientNotConfiguredException;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
-use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HttpClientCreatorTest extends TestCase

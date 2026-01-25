@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Resources\MarketPlaceInformation;
@@ -6,9 +7,8 @@ namespace Pisko\CardMarket\Resources\MarketPlaceInformation;
 use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
- * Class ArticlesResource
+ * Class ArticlesResource.
  *
- * @package Pisko\CardMarket\Resources\MarketPlaceInformation
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  * @author Petr Spinar <spinarp@gmail.com>
@@ -16,25 +16,26 @@ use Pisko\CardMarket\Resources\HttpCaller;
 final class ArticlesResource extends HttpCaller
 {
     /**
-     * Get articles by idProduct
+     * Get articles by idProduct.
      *
      * @param int $idProduct
      * @param int $start
      * @param int $maxResults
      * @param array $searchData
-     * @return array
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function getArticles(
         int $idProduct,
         int $start = 0,
         int $maxResults = 100,
-        array $searchData = []
-    ): array
-    {
+        array $searchData = [],
+    ): array {
         $optional = [
             'userType' => 'userType',
             'minUserScore' => 'userScore',
@@ -43,7 +44,7 @@ final class ArticlesResource extends HttpCaller
             'isFoil' => 'bool',
             'isSigned' => 'bool',
             'isAltered' => 'bool',
-            'minAvailable' => 'int'
+            'minAvailable' => 'int',
         ];
 
         $data['start'] = $start;
@@ -55,25 +56,26 @@ final class ArticlesResource extends HttpCaller
     }
 
     /**
-     * Get articles by specified user
+     * Get articles by specified user.
      *
      * @param int $idUser
      * @param int $start
      * @param int $maxResults
      * @param array $searchData
-     * @return array
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     *
+     * @return array
      */
     public function getArticlesByUser(
         int $idUser,
         int $start = 0,
         int $maxResults = 100,
-        array $searchData = []
-    ): array
-    {
+        array $searchData = [],
+    ): array {
         $optional = [
             'idGame' => 'game',
             'idLanguage' => 'language',
@@ -83,7 +85,6 @@ final class ArticlesResource extends HttpCaller
             'isSigned' => 'bool',
             'isAltered' => 'bool',
             'isReverseHolo' => 'bool',
-            'isPlayset' => 'bool',
             'isFirstEd' => 'bool',
             'isFullArt' => 'bool',
             'isUberRare' => 'bool',

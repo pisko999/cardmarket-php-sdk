@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Resources\OrdersManagement;
@@ -9,33 +10,37 @@ use Pisko\CardMarket\Entities\TrackingNumberEntity;
 use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
- * Class OrdersResource
+ * Class OrdersResource.
  *
- * @package Pisko\CardMarket\Resources\OrdersResource
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */
 final class OrdersResource extends HttpCaller
 {
-    public const ORDER_SELLER = "seller";
-    public const ORDER_BUYER = "buyer";
+    public const ORDER_SELLER = 'seller';
 
-    public const ORDER_STATE_BOUGHT = "bought";
-    public const ORDER_STATE_PAID = "paid";
-    public const ORDER_STATE_SENT = "sent";
-    public const ORDER_STATE_RECEIVED = "received";
-    public const ORDER_STATE_LOST = "lost";
-    public const ORDER_STATE_CANCELLED = "cancelled";
+    public const ORDER_BUYER = 'buyer';
 
+    public const ORDER_STATE_BOUGHT = 'bought';
 
+    public const ORDER_STATE_PAID = 'paid';
+
+    public const ORDER_STATE_SENT = 'sent';
+
+    public const ORDER_STATE_RECEIVED = 'received';
+
+    public const ORDER_STATE_LOST = 'lost';
+
+    public const ORDER_STATE_CANCELLED = 'cancelled';
 
     /**
      * Retrieve order details by order ID.
      *
      * @param int $orderId
      *
-     * @return array
      * @throws \Pisko\CardMarket\Exception\HttpClientException
+     *
+     * @return array
      */
     public function getOrder(int $orderId): array
     {
@@ -62,13 +67,12 @@ final class OrdersResource extends HttpCaller
 
     public function evaluateOrder(
         int $orderId,
-        int $evaluationGrade = EvaluationEntity::GRADE_VERY_GOOD, 
+        int $evaluationGrade = EvaluationEntity::GRADE_VERY_GOOD,
         int $itemDescription = EvaluationEntity::GRADE_VERY_GOOD,
         int $packaging = EvaluationEntity::GRADE_VERY_GOOD,
         string $comment = '',
-        array $complaints = []
-    ): array
-    {
+        array $complaints = [],
+    ): array {
         $evaluation = new EvaluationEntity($evaluationGrade, $itemDescription, $packaging, $comment, $complaints);
 
         return $this->post(sprintf('/order/%d/evaluation', $orderId), $evaluation);
@@ -94,7 +98,7 @@ final class OrdersResource extends HttpCaller
             self::ORDER_STATE_SENT,
             self::ORDER_STATE_RECEIVED,
             self::ORDER_STATE_LOST,
-            self::ORDER_STATE_CANCELLED
+            self::ORDER_STATE_CANCELLED,
         ])) {
             throw new \InvalidArgumentException(sprintf('Invalid state "%s".', $state));
         }
@@ -105,8 +109,9 @@ final class OrdersResource extends HttpCaller
     /**
      * Returns all send orders for the current seller.
      *
-     * @return array
      * @throws \Exception
+     *
+     * @return array
      */
     public function getSentOrders($start = 1): array
     {
@@ -118,12 +123,12 @@ final class OrdersResource extends HttpCaller
      *
      * @param int $start
      *
-     * @return array
      * @throws \Exception
+     *
+     * @return array
      */
     public function getReceivedOrders(int $start = 1): array
     {
         return $this->get(sprintf('/orders/%s/%s/%d', self::ORDER_SELLER, self::ORDER_STATE_RECEIVED, $start));
     }
-
 }

@@ -1,15 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Tests\HttpClient;
 
+use PHPUnit\Framework\TestCase;
 use Pisko\CardMarket\Authentication\AuthenticationHeaderBuilder;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
-use PHPUnit\Framework\TestCase;
 
 final class AuthenticationHeaderBuilderTest extends TestCase
 {
-
     /**
      * @var HttpClientCreator
      */
@@ -29,11 +29,11 @@ final class AuthenticationHeaderBuilderTest extends TestCase
     /**
      * @dataProvider authenticationHeaderBuilderProvider
      */
-    public function testAuthenticationHeaderBuilder(string $expected, string $url , string $method): void
+    public function testAuthenticationHeaderBuilder(string $expected, string $url, string $method): void
     {
         $this->assertSame(
             $expected,
-            $this->buildAuthenticationBuilder($this->httpClientCreator, $url, $method)->getAuthorisationHeaderValue()
+            $this->buildAuthenticationBuilder($this->httpClientCreator, $url, $method)->getAuthorisationHeaderValue(),
         );
     }
 

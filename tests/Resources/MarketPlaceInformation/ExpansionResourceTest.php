@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Tests\Resources;
 
 use Pisko\CardMarket\Resources\MarketPlaceInformation\ExpansionsResource;
@@ -8,7 +10,6 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 class ExpansionResourceTest extends ResourceTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -19,8 +20,7 @@ class ExpansionResourceTest extends ResourceTestCase
         $this->setupHttpClientCreatorMock();
         $expansionResource = new ExpansionsResource($this->httpClientCreatorMock);
 
-        foreach($this->gameExpansionListProvider() as $provider) {
-
+        foreach ($this->gameExpansionListProvider() as $provider) {
             $gameId = $provider[0];
             $countExpansions = $provider[1];
             $countApiRequestsUsed = $provider[2];
@@ -32,8 +32,8 @@ class ExpansionResourceTest extends ResourceTestCase
             $this->assertArrayHasKey('links', $response);
             $this->assertArrayHasKey('api', $response);
 
-            $this->assertSame(5000, (int)$response['api']['request-limit-max']);
-            $this->assertSame($countApiRequestsUsed, (int)$response['api']['request-limit-count']);
+            $this->assertSame(5000, (int) $response['api']['request-limit-max']);
+            $this->assertSame($countApiRequestsUsed, (int) $response['api']['request-limit-count']);
             $this->assertEquals($countExpansions, count($response['expansion']));
 
             $this->assertSame($gameId, $response['expansion'][0]['idGame']);
@@ -43,11 +43,13 @@ class ExpansionResourceTest extends ResourceTestCase
 
     public function testRetrieveSingleCardsListByExpansion()
     {
-        $mockResponse = new MockResponse(file_get_contents(sprintf(__DIR__ . "/../MockResponse/expansion_singles_%s_%s.json", 6, 1525)), [
+        $mockResponse = new MockResponse(
+            file_get_contents(sprintf(__DIR__ . '/../MockResponse/expansion_singles_%s_%s.json', 6, 1525)),
+            [
             'response_headers' => [
             'X-Request-Limit-Max' => 5000,
             'X-Request-Limit-Count' => 4589,
-            ]]
+            ]],
         );
 
         $this->setupHttpClientCreatorMock([$mockResponse]);
@@ -61,7 +63,7 @@ class ExpansionResourceTest extends ResourceTestCase
         $this->assertArrayHasKey('api', $response);
 
         $this->assertEquals(64, count($response['single']));
-        $this->assertSame("Jungle", $response['expansion']['enName']);
+        $this->assertSame('Jungle', $response['expansion']['enName']);
         $this->assertEquals(6, (int) $response['expansion']['idGame']);
     }
 
@@ -83,11 +85,10 @@ class ExpansionResourceTest extends ResourceTestCase
 
     private function createMockResponse(int $idGame, int $nbUsed): MockResponse
     {
-        return new MockResponse(file_get_contents(sprintf(__DIR__ . "/../MockResponse/expansion_%d.json", $idGame)), [
+        return new MockResponse(file_get_contents(sprintf(__DIR__ . '/../MockResponse/expansion_%d.json', $idGame)), [
           'response_headers' => [
             'X-Request-Limit-Max' => 5000,
             'X-Request-Limit-Count' => $nbUsed,
           ]]);
     }
-
 }

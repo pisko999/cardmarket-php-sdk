@@ -1,8 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Enums;
 
-enum HttpMethods{
+/**
+ * HTTP Methods enum for API requests.
+ */
+enum HttpMethods
+{
     case get;
     case post;
     case put;

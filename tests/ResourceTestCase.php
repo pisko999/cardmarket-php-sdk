@@ -1,17 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Tests;
 
 use DG\BypassFinals;
 use PHPUnit\Framework\MockObject\MockObject;
-use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use PHPUnit\Framework\TestCase;
+use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use Symfony\Component\HttpClient\MockHttpClient;
 
 abstract class ResourceTestCase extends TestCase
 {
-
     /**
      * @var MockObject
      */
@@ -37,7 +37,6 @@ abstract class ResourceTestCase extends TestCase
 
     protected function setupHttpClientCreatorMock(array $responses = [])
     {
-
         $this->httpClientCreatorMock->method('getUrl')
             ->willReturn(HttpClientCreator::API_URL);
 
@@ -49,9 +48,9 @@ abstract class ResourceTestCase extends TestCase
     private function createHttpClientMock(array $responses = [])
     {
         $mockResponses = !empty($responses) ? $responses : $this->getMockResponses();
+
         return new MockHttpClient($mockResponses);
     }
 
     abstract protected function getMockResponses(): array;
-
 }

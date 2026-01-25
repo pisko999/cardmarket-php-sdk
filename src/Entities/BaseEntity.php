@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Entities;
 
 abstract class BaseEntity
@@ -9,40 +11,43 @@ abstract class BaseEntity
     }
 
     /**
+     * Hydrate entity with data from array.
+     *
      * @param array $data
+     *
+     * @return void
      */
-    public function hydrate(array $data){
-        foreach($data as $key => $value) {
-            if (isset($this->$key) && gettype($this->$key) === gettype($value))
+    public function hydrate(array $data): void
+    {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
                 $this->$key = $value;
+            }
         }
     }
 
-
     /**
-     * Return entity as XML
+     * Return entity as XML.
      *
      * @return string
      */
-    public abstract function getPureXML(): string;
-
+    abstract public function getPureXML(): string;
 
     /**
-     * Return entity as Request XML
+     * Return entity as Request XML.
      *
      * @return string
      */
     public function getXML(): string
     {
-
         return '<?xml version="1.0" encoding="UTF-8" ?>' .
             '<request>' .
             $this->getPureXML() .
             '</request>';
     }
-    
+
     /**
-     * Return entity as array
+     * Return entity as array.
      *
      * @return array
      */

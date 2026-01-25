@@ -1,11 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Helpers;
 
-class UserTypeHelper
+final class UserTypeHelper
 {
-    const PRIVATE = "private";
-    const COMMERCIAL = "commercial";
-    const POWERSELLER = "powerseller";
+    public const PRIVATE = 'private';
+
+    public const COMMERCIAL = 'commercial';
+
+    public const POWERSELLER = 'powerseller';
 }

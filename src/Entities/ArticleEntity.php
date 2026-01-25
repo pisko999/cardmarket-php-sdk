@@ -1,44 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Entities;
 
 class ArticleEntity extends ArticleBaseEntity
 {
     protected int $idChange = 0;
+
     protected int $idProduct = 0;
+
     protected int $idLanguage = 1;
-    protected string $comments = "";
+
+    protected string $comments = '';
+
     protected int $count = 0;
+
     protected float $price = 0;
-    protected string $condition = "NM";
+
+    protected string $condition = 'NM';
+
     protected bool $isFoil = false;
+
     protected bool $isSigned = false;
+
     protected bool $isAltered = false;
-    protected bool $isPlayset = false;
+
     protected bool $error = false;
 
     public function __construct(array $data)
     {
         parent::__construct($data);
-
     }
 
-    public function getPrice(){
+    public function getPrice(): float
+    {
         return $this->price;
     }
-
 
     public function getIdChange(): int
     {
         return $this->idChange;
     }
 
-
-    public function hasError(): int
+    public function hasError(): bool
     {
         return $this->error;
     }
-
 
     public function setError(): void
     {
@@ -47,13 +55,15 @@ class ArticleEntity extends ArticleBaseEntity
 
     public function isMe(array $data): bool
     {
-        foreach($data as $key => $value) {
-            if($value == 0) // non-filled value cant be found on me
+        foreach ($data as $key => $value) {
+            if ($value == 0) { // non-filled value cant be found on me
                 continue;
+            }
             if (!isset($this->$key) || $this->$key != $value) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -63,50 +73,24 @@ class ArticleEntity extends ArticleBaseEntity
             '<idProduct>' . $this->idProduct . '</idProduct>' :
             '<idArticle>' . $this->idArticle . '</idArticle>';
 
-
-        $xml =  '<article>' .
+        $xml = '<article>' .
             $id .
             '<idLanguage>' . $this->idLanguage . '</idLanguage>' .
             '<comments>' . $this->comments . '</comments>' .
             '<count>' . $this->count . '</count>' .
             '<price>' . $this->price . '</price>' .
             '<condition>' . $this->condition . '</condition>';
-        if($this->isFoil)
+        if ($this->isFoil) {
             $xml .= '<isFoil>true</isFoil>';
-        if($this->isSigned)
+        }
+        if ($this->isSigned) {
             $xml .= '<isSigned>true</isSigned>';
-        if($this->isAltered)
+        }
+        if ($this->isAltered) {
             $xml .= '<isAltered>true</isAltered>';
-        if($this->isPlayset)
-            $xml .= '<isPlayset>true</isPlayset>';
+        }
         $xml .= '</article>';
 
         return $xml;
     }
-//
-//    public function getArray(): array{
-//        $array = [
-//            'idArticle' => $this->idArticle,
-//            'idLanguage' => $this->idLanguage,
-//            'comments' => $this->comments,
-//            'count' => $this->count,
-//            'price' => $this->price,
-//            'condition' => $this->condition,
-//        ];
-//
-//        if ($this->idProduct != 0)
-//            $array['idProduct'] = $this->idProduct;
-//        else
-//            $array['idArticle'] = $this->idArticle;
-//
-//        if($this->isFoil)
-//            $array['isFoil'] = true;
-//        if($this->isFoil)
-//            $array['isSigned'] = true;
-//        if($this->isFoil)
-//            $array['isAltered'] = true;
-//        if($this->isFoil)
-//            $array['isPlayset'] = true;
-//        return $array;
-//    }
 }

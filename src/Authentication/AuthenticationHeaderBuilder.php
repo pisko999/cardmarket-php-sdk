@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Authentication;
 
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
@@ -9,55 +11,26 @@ use Pisko\CardMarket\HttpClient\HttpClientCreator;
  *
  * Build the Authentication header string base on the Cardmarket documentation
  * https://api.cardmarket.com/ws/documentation/API:Auth_OAuthHeader
- *
- * @package CardMarket\Authentication
  */
 final class AuthenticationHeaderBuilder
 {
-    /**
-     * @var string
-     */
-    private $nonce;
+    private string $nonce;
 
-    /**
-     * @var int
-     */
-    private $timestamp;
+    private int $timestamp;
 
-    /**
-     * @var string
-     */
-    private $signatureMethod;
+    private string $signatureMethod;
 
-    /**
-     * @var string
-     */
-    private $version;
+    private string $version;
 
-    /**
-     * @var HttpClientCreator
-     */
-    private $httpClientCreator;
+    private HttpClientCreator $httpClientCreator;
 
-    /**
-     * @var array
-     */
-    private $parsedURL;
+    private array $parsedURL;
 
-    /**
-     * @var string
-     */
-    private $method;
+    private string $method;
 
-    /**
-     * @var array
-     */
-    private $parameters;
+    private array $parameters;
 
-    /**
-     * @var array
-     */
-    private $credentials;
+    private array $credentials;
 
     public function __construct(HttpClientCreator $httpClientCreator, string $url, string $method = 'GET')
     {
@@ -124,7 +97,7 @@ final class AuthenticationHeaderBuilder
 
         foreach ($this->parameters as $key => $value) {
             if ('realm' !== $key) {
-                $encodedParams[rawurlencode((string)$key)] = rawurlencode((string)$value);
+                $encodedParams[rawurlencode((string) $key)] = rawurlencode((string) $value);
             }
         }
 
@@ -134,7 +107,7 @@ final class AuthenticationHeaderBuilder
     }
 
     /**
-     * Merge the needed headers params with query string params
+     * Merge the needed headers params with query string params.
      *
      * @return array
      */

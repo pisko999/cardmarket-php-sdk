@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Entities;
 
 class ArticleBaseEntity extends BaseEntity
 {
     protected int $idArticle = 0;
+
     protected int $amount = 0;
 
     public function __construct(array $data)
@@ -21,7 +24,8 @@ class ArticleBaseEntity extends BaseEntity
             '</article>';
     }
 
-    public function getArray(): array{
+    public function getArray(): array
+    {
         return [
             'idArticle' => $this->idArticle,
             'amount' => $this->amount,

@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Tests\Resources;
 
 use DG\BypassFinals;
+use PHPUnit\Framework\TestCase;
 use Pisko\CardMarket\Exception\HttpClientException;
 use Pisko\CardMarket\Exception\HttpServerException;
 use Pisko\CardMarket\Exception\UnknownErrorException;
 use Pisko\CardMarket\HttpClient\HttpClientCreator;
 use Pisko\CardMarket\Resources\HttpCaller;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
@@ -36,26 +37,24 @@ final class HttpCallerTest extends TestCase
             'access_token' => 'token',
             'access_secret' => 'secret',
           ]);
-
-
     }
 
     public function testIfInstanceIdHttpCaller()
     {
         $this->assertInstanceOf(HttpCaller::class, $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "coucou"}', [])
+            new MockResponse('{"message": "coucou"}', []),
         ));
     }
 
     public function testBadExceptionWithoutJsonHeader()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('coucou', [
-            "http_code" => 400,
-            "response_headers" => [
-              'Content-Type' => "application/fake",
-            ]
-          ])
+            new MockResponse('coucou', [
+            'http_code' => 400,
+            'response_headers' => [
+              'Content-Type' => 'application/fake',
+            ],
+          ]),
         );
 
         $this->expectException(HttpClientException::class);
@@ -66,12 +65,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectBadRequestException()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "coucou"}', [
-            "http_code" => 400,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "coucou"}', [
+            'http_code' => 400,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(HttpClientException::class);
@@ -81,12 +80,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectUnauthorizedException()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "You don\'t have the permission."}', [
-            "http_code" => 401,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "You don\'t have the permission."}', [
+            'http_code' => 401,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(HttpClientException::class);
@@ -97,12 +96,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectForbiddenException()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "You don\'t have the permission."}', [
-            "http_code" => 403,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "You don\'t have the permission."}', [
+            'http_code' => 403,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(HttpClientException::class);
@@ -113,12 +112,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectNotFoundException()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "Resource not found."}', [
-            "http_code" => 404,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "Resource not found."}', [
+            'http_code' => 404,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(HttpClientException::class);
@@ -129,12 +128,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectTooManyRequestsException()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "Too many requests."}', [
-            "http_code" => 429,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "Too many requests."}', [
+            'http_code' => 429,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(HttpClientException::class);
@@ -145,12 +144,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectError500Exception()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "Too many requests."}', [
-            "http_code" => 500,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "Too many requests."}', [
+            'http_code' => 500,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(HttpServerException::class);
@@ -161,12 +160,12 @@ final class HttpCallerTest extends TestCase
     public function testExpectUnknownException()
     {
         $abtractHttpCaller = $this->setAbstracthttpCallerWithCustomMockResponse(
-          new MockResponse('{"message": "Too many requests."}', [
-            "http_code" => 1,
-            "response_headers" => [
-              'Content-Type' => "application/json",
-            ]
-          ])
+            new MockResponse('{"message": "Too many requests."}', [
+            'http_code' => 1,
+            'response_headers' => [
+              'Content-Type' => 'application/json',
+            ],
+          ]),
         );
 
         $this->expectException(UnknownErrorException::class);
@@ -177,7 +176,7 @@ final class HttpCallerTest extends TestCase
     {
         $this->httpClientCreatorMock->method('createHttpClient')->willReturn(new MockHttpClient($mockResponse));
 
-        return new class($this->httpClientCreatorMock) extends HttpCaller {
+        return new class ($this->httpClientCreatorMock) extends HttpCaller {
             public function __construct($httpClientCreator)
             {
                 parent::__construct($httpClientCreator);
@@ -189,5 +188,4 @@ final class HttpCallerTest extends TestCase
             }
         };
     }
-
 }

@@ -1,17 +1,17 @@
 <?php
 
-namespace Pisko\CardMarket\Entities;
+declare(strict_types=1);
 
-use phpDocumentor\Reflection\Types\ClassString;
+namespace Pisko\CardMarket\Entities;
 
 abstract class MultipleEntity extends BaseEntity
 {
     protected string $childEntity;
+
     protected array $entities = [];
 
-
     /**
-     * Necessary to pass as array of elements
+     * Necessary to pass as array of elements.
      *
      * @param array $entities
      */
@@ -19,7 +19,7 @@ abstract class MultipleEntity extends BaseEntity
     {
         if ($entities instanceof BaseEntity) {
             $this->entities[] = $entities;
-        } elseif (is_array($entities) && reset($entities) instanceof BaseEntity) {
+        } elseif (reset($entities) instanceof BaseEntity) {
             $this->entities = $entities;
         } else {
             foreach ($entities as $entity) {
@@ -28,23 +28,25 @@ abstract class MultipleEntity extends BaseEntity
         }
     }
 
-
     /**
-     * Add entity
+     * Add entity.
      *
      * @param BaseEntity $entity
+     *
      * @return void
      */
-    public function add(BaseEntity $entity): void {
-        if ($entity instanceof $this->childEntity)
+    public function add(BaseEntity $entity): void
+    {
+        if ($entity instanceof $this->childEntity) {
             $this->entities[] = $entity;
+        }
     }
 
-
     /**
-     * Parse entity and add
+     * Parse entities and add them.
      *
-     * @param mixed $entity
+     * @param array<mixed> $entities Array of entity data to parse and add
+     *
      * @return void
      */
     public function parseAdd(array $entities): void
@@ -54,23 +56,23 @@ abstract class MultipleEntity extends BaseEntity
         }
     }
 
-
-    public function getCount(): int {
+    public function getCount(): int
+    {
         return count($this->entities);
     }
 
-    public function get(int $id): BaseEntity|null{
+    public function get(int $id): BaseEntity|null
+    {
         return $this->entities[$id] ?? null;
     }
 
-
-    public function free(): void {
+    public function free(): void
+    {
         $this->entities = [];
     }
 
-
     /**
-     * Return entity as XML
+     * Return entity as XML.
      *
      * @return string
      */
@@ -80,11 +82,12 @@ abstract class MultipleEntity extends BaseEntity
         foreach ($this->entities as $entity) {
             $ret .= $entity->getPureXml();
         }
+
         return $ret;
     }
 
     /**
-     * Return entity as Request XML
+     * Return entity as Request XML.
      *
      * @return string
      */
@@ -97,14 +100,17 @@ abstract class MultipleEntity extends BaseEntity
             $ret .= $entity->getPureXML();
         }
         $ret .= '</request>';
+
         return $ret;
     }
 
-    public function getArray(): array{
+    public function getArray(): array
+    {
         $array = [];
-        foreach($this->entities as $entity) {
+        foreach ($this->entities as $entity) {
             $array[] = $entity->getArray();
         }
+
         return $array;
     }
 
@@ -129,8 +135,9 @@ abstract class MultipleEntity extends BaseEntity
         if (!class_exists($this->childEntity)) {
             throw new \LogicException('Child entity class does not exist: ' . $this->childEntity);
         }
-        return $this->childEntity::class;
+
+        return $this->childEntity;
     }
 
-    public abstract function getMe(array $entities): self;
+    abstract public function getMe(array $entities): self;
 }

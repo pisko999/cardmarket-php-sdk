@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\HttpClient;
@@ -9,8 +10,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpClientCreator
 {
-    const API_URL = 'https://api.cardmarket.com/ws/v2.0/output.json';
-    const API_URL_SANDBOX = 'https://sandbox.cardmarket.com/ws/v2.0/output.json';
+    public const API_URL = 'https://api.cardmarket.com/ws/v2.0/output.json';
+
+    public const API_URL_SANDBOX = 'https://sandbox.cardmarket.com/ws/v2.0/output.json';
 
     /**
      * @var array
@@ -53,7 +55,7 @@ class HttpClientCreator
      * HttpClientCreator constructor.
      *
      * @param array $clientParams
-     *    The custom parameters to build the HttpClient.
+     *                            The custom parameters to build the HttpClient.
      */
     public function __construct(array $clientParams = [], bool $sandbox = false)
     {
@@ -64,7 +66,7 @@ class HttpClientCreator
     }
 
     /**
-     * Build a dedicated client to consume CardMarket API
+     * Build a dedicated client to consume CardMarket API.
      *
      * @return HttpClientInterface
      */
@@ -101,7 +103,7 @@ class HttpClientCreator
     }
 
     /**
-     * Return credentials
+     * Return credentials.
      *
      * @return array
      */
@@ -172,7 +174,7 @@ class HttpClientCreator
     }
 
     /**
-     * return actual url
+     * return actual url.
      *
      * @return string
      */

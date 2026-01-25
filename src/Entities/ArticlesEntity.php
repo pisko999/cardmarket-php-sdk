@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pisko\CardMarket\Entities;
 
 class ArticlesEntity extends MultipleEntity
@@ -18,22 +20,28 @@ class ArticlesEntity extends MultipleEntity
 
     public function getIdsChange(): array
     {
-        return array_map(function(ArticleEntity $r){return $r->getIdChange();},$this->entities);
+        return array_map(function (ArticleEntity $r) {
+            return $r->getIdChange();
+        }, $this->entities);
     }
 
     public function getIdsChangeWithoutError(): array
     {
-        return array_map(function(ArticleEntity $r){return $r->getIdChange();},$this->getEntitiesWithoutError());
+        return array_map(function (ArticleEntity $r) {
+            return $r->getIdChange();
+        }, $this->getEntitiesWithoutError());
     }
 
     public function getEntitiesWithoutError(): array
     {
-        return array_filter($this->entities, function(ArticleEntity $r) {return !$r->hasError();});
+        return array_filter($this->entities, function (ArticleEntity $r) {
+            return !$r->hasError();
+        });
     }
 
     public function getEntityByTried(array $data): array
     {
-        return array_filter($this->getEntitiesWithoutError(), function(ArticleEntity $r) use ($data) {
+        return array_filter($this->getEntitiesWithoutError(), function (ArticleEntity $r) use ($data) {
             return $r->isMe($data);
         });
     }

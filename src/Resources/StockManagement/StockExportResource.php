@@ -1,27 +1,27 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Resources\StockManagement;
 
-use Pisko\CardMarket\Entities\ArticleBaseEntity;
 use Pisko\CardMarket\Resources\HttpCaller;
 
 /**
- * Class StockInShoppingCartsResource
+ * Class StockInShoppingCartsResource.
  *
- * @package Pisko\CardMarket\Resources\StockManagement
  *
  * @author Petr Spinar <spinarp@gmail.com>
  */
 final class StockExportResource extends HttpCaller
 {
     /**
-     * Request the export of Article entities from your stock
+     * Request the export of Article entities from your stock.
      *
-     * @param int idGame
+     * @param int|null $idGame Game ID to filter export
      *
-     * @return array
      * @throws \Exception
+     *
+     * @return array<string, mixed>
      */
     public function askStockExport(?int $idGame = null): array
     {
@@ -29,6 +29,7 @@ final class StockExportResource extends HttpCaller
         if ($idGame) {
             $url .= '?idGame=' . $idGame;
         }
+
         return $this->post($url);
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pisko\CardMarket\Exception;
@@ -7,18 +8,16 @@ use Pisko\CardMarket\CardMarketException;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
- * Class HttpClientException
+ * Class HttpClientException.
  *
  * https://api.cardmarket.com/ws/documentation/API_2.0:Response_Codes
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
- *
  */
 final class HttpClientException extends \RuntimeException implements CardMarketException
 {
-
     /**
-     * @var \Symfony\Contracts\HttpClient\ResponseInterface
+     * @var ResponseInterface
      */
     private $response;
 
@@ -36,7 +35,7 @@ final class HttpClientException extends \RuntimeException implements CardMarketE
             $message = $body;
         } else {
             $body = json_decode($body, true);
-            $message = isset($body['message']) ? $body['message'] : 'Unknown';
+            $message = $body['message'] ?? 'Unknown';
         }
 
         $message = sprintf("The parameters passed to the API were invalid. Check your inputs!\n\n%s", $message);
