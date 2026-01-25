@@ -41,12 +41,14 @@ final class AuthenticationHeaderBuilderTest extends TestCase
     {
         return [
             'with query params' => [
-                'OAuth realm="https://api.cardmarket.com/ws/v2.0/output.json/users/karmacrow/articles", oauth_consumer_key="app_token", oauth_token="access_token", oauth_nonce="5d676828e6fe7", oauth_timestamp="1567057960", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", start="0", maxResults="10", oauth_signature="95ULTYYDOl+t35olPzaGGymppuE="',
+                // Query params should be in signature calculation but NOT in Authorization header
+                'OAuth realm="https://api.cardmarket.com/ws/v2.0/output.json/users/karmacrow/articles", oauth_consumer_key="app_token", oauth_token="access_token", oauth_nonce="5d676828e6fe7", oauth_timestamp="1567057960", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", oauth_signature="95ULTYYDOl+t35olPzaGGymppuE="',
                 HttpClientCreator::API_URL . '/users/karmacrow/articles?start=0&maxResults=10',
                 'GET',
             ],
             'with query params and lower case method' => [
-                'OAuth realm="https://api.cardmarket.com/ws/v2.0/output.json/users/karmacrow/articles", oauth_consumer_key="app_token", oauth_token="access_token", oauth_nonce="5d676828e6fe7", oauth_timestamp="1567057960", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", start="0", maxResults="10", oauth_signature="95ULTYYDOl+t35olPzaGGymppuE="',
+                // Query params should be in signature calculation but NOT in Authorization header
+                'OAuth realm="https://api.cardmarket.com/ws/v2.0/output.json/users/karmacrow/articles", oauth_consumer_key="app_token", oauth_token="access_token", oauth_nonce="5d676828e6fe7", oauth_timestamp="1567057960", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", oauth_signature="95ULTYYDOl+t35olPzaGGymppuE="',
                 HttpClientCreator::API_URL . '/users/karmacrow/articles?start=0&maxResults=10',
                 'get',
             ],

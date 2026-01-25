@@ -61,7 +61,10 @@ final class AuthenticationHeaderBuilder
         $header = 'OAuth ';
         $headerParams = [];
         foreach ($this->parameters as $key => $value) {
-            $headerParams[] = $key . '="' . $value . '"';
+            // Only include OAuth parameters in the header, not query parameters
+            if ($key === 'realm' || str_starts_with($key, 'oauth_')) {
+                $headerParams[] = $key . '="' . $value . '"';
+            }
         }
         $header .= implode(', ', $headerParams);
 
@@ -77,7 +80,8 @@ final class AuthenticationHeaderBuilder
     {
         $finalUrl = strtoupper($this->method) . '&' . rawurlencode(self::getUrlCall()) . '&';
 
-        $paramsString = rawurlencode(http_build_query($this->encodeParameters()));
+        // Use RFC3986 encoding for proper %20 handling, then rawurlencode the entire string
+        $paramsString = rawurlencode(http_build_query($this->sortParameters(), '', '&', PHP_QUERY_RFC3986));
         $finalUrl .= $paramsString;
 
         $signatureKey = rawurlencode($this->credentials['application_secret']) . '&' . rawurlencode($this->credentials['access_secret']);
@@ -87,23 +91,23 @@ final class AuthenticationHeaderBuilder
     }
 
     /**
-     * Encode each parameters and sort for the OAuth signature.
+     * Sort parameters for OAuth signature (without pre-encoding).
      *
      * @return array
      */
-    private function encodeParameters(): array
+    private function sortParameters(): array
     {
-        $encodedParams = [];
+        $params = [];
 
         foreach ($this->parameters as $key => $value) {
             if ('realm' !== $key) {
-                $encodedParams[rawurlencode((string) $key)] = rawurlencode((string) $value);
+                $params[(string) $key] = (string) $value;
             }
         }
 
-        ksort($encodedParams);
+        ksort($params);
 
-        return $encodedParams;
+        return $params;
     }
 
     /**

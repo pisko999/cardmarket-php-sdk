@@ -13,7 +13,7 @@ use Symfony\Component\HttpClient\MockHttpClient;
 abstract class ResourceTestCase extends TestCase
 {
     /**
-     * @var MockObject
+     * @var MockObject&HttpClientCreator
      */
     protected $httpClientCreatorMock;
 

@@ -18,6 +18,7 @@ class GamesTest extends TestCase
     public function testGetGamesList(): void
     {
         $result = $this->client->games()->getGamesList();
+        $this->logResponse('getGamesList', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('game', $result);
@@ -44,7 +45,9 @@ class GamesTest extends TestCase
     public function testGamesListConsistency(): void
     {
         $result1 = $this->client->games()->getGamesList();
+        $this->logResponse('getGamesList_1', $result1);
         $result2 = $this->client->games()->getGamesList();
+        $this->logResponse('getGamesList_2', $result2);
 
         $this->assertEquals(
             count($result1['game']),

@@ -19,9 +19,11 @@ class UsersTest extends TestCase
     {
         // First get our own user ID
         $account = $this->client->account()->getAccountInformation();
+        $this->logResponse('getAccountInformation', $account);
         $userId = $account['account']['idUser'];
 
         $result = $this->client->users()->getUserDetails($userId);
+        $this->logResponse('getUserDetails', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('user', $result);
@@ -48,15 +50,26 @@ class UsersTest extends TestCase
      */
     public function testFindUsers(): void
     {
-        // Search for a common username pattern
-        $result = $this->client->users()->findUsers('cardmarket');
+        $searchUsername = getTestConfig('TEST_SEARCH_USERNAME');
+        
+        if (empty($searchUsername)) {
+            $this->skip('TEST_SEARCH_USERNAME not configured');
+        }
+
+        $result = $this->client->users()->findUsers($searchUsername);
+        $this->logResponse('findUsers', $result);
 
         $this->assertIsArray($result);
 
-        if (isset($result['user'])) {
-            info(sprintf('Found %d users matching "cardmarket"', count($result['user'])));
+        // API returns 'users' (plural), not 'user'
+        $users = $result['users'] ?? $result['user'] ?? [];
+        if (!empty($users)) {
+            if (!isset($users[0])) {
+                $users = [$users];
+            }
+            info(sprintf('Found %d users matching "%s"', count($users), $searchUsername));
         } else {
-            info('No users found');
+            info(sprintf('No users found matching "%s"', $searchUsername));
         }
     }
 
@@ -67,9 +80,11 @@ class UsersTest extends TestCase
     {
         // Search for unlikely username
         $result = $this->client->users()->findUsers('xyznonexistent12345username67890abc');
+        $this->logResponse('findUsers_nonexistent', $result);
 
         $this->assertIsArray($result);
-        $count = count($result['user'] ?? []);
+        $users = $result['users'] ?? $result['user'] ?? [];
+        $count = is_array($users) ? count($users) : 0;
 
         info(sprintf('Found %d users for unlikely search (expected 0)', $count));
     }
@@ -88,6 +103,7 @@ class UsersTest extends TestCase
         }
 
         $result = $this->client->articles()->getArticlesByUser((int) $userId);
+        $this->logResponse('getArticlesByUser', $result);
 
         $this->assertIsArray($result);
         $count = count($result['article'] ?? []);

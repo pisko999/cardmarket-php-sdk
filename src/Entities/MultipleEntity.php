@@ -21,11 +21,31 @@ abstract class MultipleEntity extends BaseEntity
             $this->entities[] = $entities;
         } elseif (reset($entities) instanceof BaseEntity) {
             $this->entities = $entities;
+        } elseif ($this->isAssociativeArray($entities)) {
+            // Single entity data (associative array like ['idProduct' => 1, 'count' => 2])
+            $this->entities[] = new $this->childEntity($entities);
         } else {
+            // Multiple entities (indexed array of entity data)
             foreach ($entities as $entity) {
                 $this->entities[] = new $this->childEntity($entity);
             }
         }
+    }
+
+    /**
+     * Check if array is associative (has string keys).
+     *
+     * @param array $array
+     *
+     * @return bool
+     */
+    private function isAssociativeArray(array $array): bool
+    {
+        if (empty($array)) {
+            return false;
+        }
+
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 
     /**
@@ -51,8 +71,15 @@ abstract class MultipleEntity extends BaseEntity
      */
     public function parseAdd(array $entities): void
     {
-        foreach ($entities as $entity) {
-            $this->add(new $this->childEntity($entity));
+        // Check if it's a single entity (associative array) or multiple entities
+        if ($this->isAssociativeArray($entities)) {
+            // Single entity
+            $this->add(new $this->childEntity($entities));
+        } else {
+            // Multiple entities
+            foreach ($entities as $entity) {
+                $this->add(new $this->childEntity($entity));
+            }
         }
     }
 

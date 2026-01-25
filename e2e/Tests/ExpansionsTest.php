@@ -19,6 +19,7 @@ class ExpansionsTest extends TestCase
     {
         $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
         $result = $this->client->expansions()->getExpansionsListByGame($gameId);
+        $this->logResponse('getExpansionsListByGame', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('expansion', $result);
@@ -48,10 +49,10 @@ class ExpansionsTest extends TestCase
      */
     public function testGetCardsListByExpansion(): void
     {
-        $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
         $expansionId = (int) getTestConfig('TEST_EXPANSION_ID', 1525);
 
-        $result = $this->client->expansions()->getCardsListByExpansion($gameId, $expansionId);
+        $result = $this->client->expansions()->getCardsListByExpansion($expansionId);
+        $this->logResponse('getCardsListByExpansion', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('single', $result);
@@ -70,43 +71,8 @@ class ExpansionsTest extends TestCase
      */
     public function testGetCardsForNonExistentExpansionFails(): void
     {
-        $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
-
         $this->assertThrows(
-            fn () => $this->client->expansions()->getCardsListByExpansion($gameId, 999999),
-            HttpClientException::class,
-        );
-    }
-
-    /**
-     * Test expansion details.
-     */
-    public function testGetExpansionDetails(): void
-    {
-        $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
-        $expansionId = (int) getTestConfig('TEST_EXPANSION_ID', 1525);
-
-        $result = $this->client->expansions()->getExpansionDetails($gameId, $expansionId);
-
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('expansion', $result);
-
-        $expansion = $result['expansion'];
-        $this->assertArrayHasKey('idExpansion', $expansion);
-        $this->assertEquals($expansionId, $expansion['idExpansion']);
-
-        info(sprintf('Expansion: %s (ID: %d)', $expansion['enName'], $expansion['idExpansion']));
-    }
-
-    /**
-     * Test getting details for non-existent expansion.
-     */
-    public function testGetNonExistentExpansionDetailsFails(): void
-    {
-        $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
-
-        $this->assertThrows(
-            fn () => $this->client->expansions()->getExpansionDetails($gameId, 999999),
+            fn () => $this->client->expansions()->getCardsListByExpansion(999999),
             HttpClientException::class,
         );
     }

@@ -32,8 +32,7 @@ final class MetaproductsResource extends HttpCaller
     }
 
     /**
-     * Find metaproducts by name
-     * not working with spaces :(.
+     * Find metaproducts by name.
      *
      * @param string $search
      * @param array $searchData
@@ -55,10 +54,11 @@ final class MetaproductsResource extends HttpCaller
             'idLanguage' => 'int',
         ];
 
-        $data = ['search' => isset($searchData['exact']) && $searchData['exact'] ? $search : str_replace(' ', '', $search)];
+        // http_build_query will properly URL-encode the search string (spaces become %20)
+        $data = ['search' => $search];
 
         $data += $this->setUpOptionalParameters($searchData, $optional);
 
-        return $this->get(sprintf('/metaproducts/find?%s', http_build_query($data)));
+        return $this->get(sprintf('/metaproducts/find?%s', http_build_query($data, '', '&', PHP_QUERY_RFC3986)));
     }
 }

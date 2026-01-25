@@ -29,6 +29,42 @@ final class CartResource extends ModelMultipleResource
     protected string $className = CartArticlesEntity::class;
 
     /**
+     * Add article(s) to shopping cart.
+     *
+     * Creates entity, sets ADD action, and sends request immediately.
+     *
+     * @param array $articles Article data - single article or array of articles
+     *                        Each article: ['idArticle' => int, 'amount' => int]
+     *
+     * @return array Response from API
+     */
+    public function addToCart(array $articles): array
+    {
+        $entity = new CartArticlesEntity($articles);
+        $entity->setAction(CartArticlesEntity::ACTION_ADD);
+
+        return parent::add($entity);
+    }
+
+    /**
+     * Remove article(s) from shopping cart.
+     *
+     * Creates entity, sets REMOVE action, and sends request immediately.
+     *
+     * @param array $articles Article data - single article or array of articles
+     *                        Each article: ['idArticle' => int, 'amount' => int]
+     *
+     * @return array Response from API
+     */
+    public function removeFromCart(array $articles): array
+    {
+        $entity = new CartArticlesEntity($articles);
+        $entity->setAction(CartArticlesEntity::ACTION_REMOVE);
+
+        return parent::add($entity);
+    }
+
+    /**
      * set the action for the cart operation.
      *
      * @param string $action

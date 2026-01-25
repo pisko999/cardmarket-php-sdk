@@ -121,6 +121,6 @@ final class StockResource extends HttpCaller
      */
     public function getStockArticlesOfProduct(int $idProduct): array
     {
-        return $this->get(sprintf('/stock/product/%d', $idProduct));
+        return $this->get(sprintf('/stock/products/%d', $idProduct));
     }
 }

@@ -1,0 +1,10 @@
+parameters:
+    level: 5
+    paths:
+        - Tests
+    bootstrapFiles:
+        - bootstrap.php
+    scanFiles:
+        - TestCase.php
+        - bootstrap.php
+    excludePaths: []

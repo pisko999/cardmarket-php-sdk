@@ -12,6 +12,9 @@ class StockInShoppingCartsResourceTest extends ResourceTestCase
 {
     private StockInShoppingCartsResource $stockInCartsResource;
 
+    /**
+     * @var MockObject
+     */
     public function setUp(): void
     {
         parent::setUp();

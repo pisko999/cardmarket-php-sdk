@@ -76,12 +76,13 @@ final class ProductsResource extends HttpCaller
             'idLanguage' => 'int',
         ];
 
-        $data = ['search' => isset($searchData['exact']) && $searchData['exact'] ? $search : str_replace(' ', '', $search)];
+        // http_build_query with RFC3986 will properly URL-encode spaces as %20
+        $data = ['search' => $search];
         $data['start'] = $start;
         $data['maxResults'] = $maxResults;
 
         $data += $this->setUpOptionalParameters($searchData, $optional);
 
-        return $this->get(sprintf('/products/find?%s', http_build_query($data)));
+        return $this->get(sprintf('/products/find?%s', http_build_query($data, '', '&', PHP_QUERY_RFC3986)));
     }
 }

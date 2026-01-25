@@ -12,8 +12,6 @@ class HttpClientCreator
 {
     public const API_URL = 'https://api.cardmarket.com/ws/v2.0/output.json';
 
-    public const API_URL_SANDBOX = 'https://sandbox.cardmarket.com/ws/v2.0/output.json';
-
     /**
      * @var array
      */
@@ -57,12 +55,9 @@ class HttpClientCreator
      * @param array $clientParams
      *                            The custom parameters to build the HttpClient.
      */
-    public function __construct(array $clientParams = [], bool $sandbox = false)
+    public function __construct(array $clientParams = [])
     {
         $this->clientParams = $clientParams;
-        if ($sandbox) {
-            $this->url = self::API_URL_SANDBOX;
-        }
     }
 
     /**

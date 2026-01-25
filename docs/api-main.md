@@ -16,8 +16,6 @@ Document written on September, 30th 2015
 
 Welcome to the first release version of Cardmarket's API 2.0.
 
-Read more about the Sandbox and its requirements at the Sandbox Server Documentation.
-
 ## Access the API and Authentication
 
 With the introduction of the 2.0 version all versions of the API will run parallel on our servers.
@@ -26,7 +24,7 @@ Once 2.0 hits the live servers, we'll discontinue support for 1.0, while support
 
 With 1.1 we changed the way of authentication against the API and everything you need to know about our implementation of OAuth and how to use it, you'll find in the dedicated Authentication Documentation.
 
-To create an app, login to your account at the normal (sandbox) website and go to your profile page. Here you'll find the option for creating one.
+To create an app, login to your account at https://www.cardmarket.com and go to your profile page. Here you'll find the option for creating one.
 
 ## Types of Resources
 
@@ -48,9 +46,9 @@ With 1.1 we introduced JSON as an additional response format for all requests. Y
 
 ### Examples
 
-- `GET https://sandbox.mkmapi.eu/ws/v2.0/games` will return Cardmarket's supported games as XML (because XML is standard).
-- `GET https://sandbox.mkmapi.eu/ws/v2.0/output.xml/games` will return Cardmarket's supported games as XML.
-- `GET https://sandbox.mkmapi.eu/ws/v2.0/output.json/games` will return Cardmarket's supported games as JSON.
+- `GET https://api.cardmarket.com/ws/v2.0/games` will return Cardmarket's supported games as XML (because XML is standard).
+- `GET https://api.cardmarket.com/ws/v2.0/output.xml/games` will return Cardmarket's supported games as XML.
+- `GET https://api.cardmarket.com/ws/v2.0/output.json/games` will return Cardmarket's supported games as JSON.
 
 ### Entities
 
@@ -85,16 +83,11 @@ Create and manage wants lists, add/edit/delete items from wants lists, and retri
 ### 7. Cardmarket/API Services
 Additional services provided by the API including captcha verification and other utility functions.
 
-## Base URLs
+## Base URL
 
 ### Production
 ```
 https://api.cardmarket.com/ws/v2.0/
-```
-
-### Sandbox (Testing)
-```
-https://sandbox.mkmapi.eu/ws/v2.0/
 ```
 
 ## Request Formats
@@ -185,21 +178,20 @@ Recommended values:
 - Response format differences
 
 **Migration Notes:**
-- Test thoroughly in Sandbox environment before production
+- Test thoroughly with a dedicated test account before full production use
 - Update entity parsing code for 2.0 structure
 - Review authentication if migrating from pre-1.1
 - Check for deprecated endpoints
 
 ## Support and Resources
 
-- **Sandbox Environment**: Test your application without affecting production data
 - **API Documentation**: Detailed documentation for all endpoints
 - **Entity Documentation**: Complete entity structure reference
 - **Authentication Guide**: OAuth implementation details
 
 ## Best Practices
 
-1. **Use Sandbox for testing** - Always test in sandbox before production
+1. **Use a dedicated test account** - Test with an account that has limited stock/funds
 2. **Implement error handling** - Handle all HTTP status codes appropriately
 3. **Respect rate limits** - Monitor X-Request-Limit headers
 4. **Use pagination** - For large datasets, always paginate

@@ -15,7 +15,7 @@ use Pisko\CardMarket\Exception\HttpClientException;
  */
 class WantslistsTest extends TestCase
 {
-    private const TEST_PREFIX = '[E2E Test]';
+    private const TEST_PREFIX = 'E2E';
 
     private ?int $createdWantslistId = null;
 
@@ -25,6 +25,7 @@ class WantslistsTest extends TestCase
     public function testGetWantsLists(): void
     {
         $result = $this->client->wantslist()->getWantsLists();
+        $this->logResponse('getWantsLists', $result);
 
         $this->assertIsArray($result);
 
@@ -40,19 +41,21 @@ class WantslistsTest extends TestCase
      */
     public function testCreateWantsList(): void
     {
-        $name = self::TEST_PREFIX . ' Wantslist ' . date('Y-m-d H:i:s');
+        $name = 'E2EW' . substr(date('is'), -4);
         $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
 
         $result = $this->client->wantslist()->createWantsList($name, $gameId);
+        $this->logResponse('createWantsList', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('wantslist', $result);
+        $this->assertNotEmpty($result['wantslist']);
 
-        $wantslist = $result['wantslist'];
-        $this->assertArrayHasKey('idWantslist', $wantslist);
+        $wantslist = $result['wantslist'][0];
+        $this->assertArrayHasKey('idWantsList', $wantslist);
         $this->assertEquals($name, $wantslist['name']);
 
-        $this->createdWantslistId = $wantslist['idWantslist'];
+        $this->createdWantslistId = $wantslist['idWantsList'];
         info(sprintf('Created wantslist: %s (ID: %d)', $name, $this->createdWantslistId));
     }
 
@@ -62,17 +65,19 @@ class WantslistsTest extends TestCase
     public function testGetWantsList(): void
     {
         // First create a wantslist
-        $name = self::TEST_PREFIX . ' Get ' . date('Y-m-d H:i:s');
+        $name = 'E2EG' . substr(date('is'), -4);
         $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
 
         $createResult = $this->client->wantslist()->createWantsList($name, $gameId);
-        $wantslistId = $createResult['wantslist']['idWantslist'];
+        $this->logResponse('createWantsList_forGet', $createResult);
+        $wantslistId = $createResult['wantslist'][0]['idWantsList'];
 
         $result = $this->client->wantslist()->getWantsList($wantslistId);
+        $this->logResponse('getWantsList', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('wantslist', $result);
-        $this->assertEquals($wantslistId, $result['wantslist']['idWantslist']);
+        $this->assertEquals($wantslistId, $result['wantslist']['idWantsList']);
 
         info(sprintf('Wantslist %d retrieved successfully', $wantslistId));
 
@@ -97,14 +102,16 @@ class WantslistsTest extends TestCase
     public function testRenameWantsList(): void
     {
         // First create a wantslist
-        $name = self::TEST_PREFIX . ' Rename ' . date('Y-m-d H:i:s');
+        $name = 'E2ER' . substr(date('is'), -4);
         $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
 
         $createResult = $this->client->wantslist()->createWantsList($name, $gameId);
-        $wantslistId = $createResult['wantslist']['idWantslist'];
+        $this->logResponse('createWantsList', $createResult);
+        $wantslistId = $createResult['wantslist'][0]['idWantsList'];
 
-        $newName = self::TEST_PREFIX . ' Renamed ' . date('Y-m-d H:i:s');
+        $newName = 'E2RN' . substr(date('is'), -4);
         $result = $this->client->wantslist()->renameWantsList($wantslistId, $newName);
+        $this->logResponse('renameWantsList', $result);
 
         $this->assertIsArray($result);
 
@@ -131,11 +138,12 @@ class WantslistsTest extends TestCase
     public function testAddItemsToWantsList(): void
     {
         // Create a wantslist
-        $name = self::TEST_PREFIX . ' Items ' . date('Y-m-d H:i:s');
+        $name = 'E2EI' . substr(date('is'), -4);
         $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
 
         $createResult = $this->client->wantslist()->createWantsList($name, $gameId);
-        $wantslistId = $createResult['wantslist']['idWantslist'];
+        $this->logResponse('createWantsList', $createResult);
+        $wantslistId = $createResult['wantslist'][0]['idWantsList'];
 
         // Add item
         $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
@@ -149,6 +157,7 @@ class WantslistsTest extends TestCase
         ]);
 
         $result = $this->client->wantslist()->addItemsToWantsList($wantslistId, $items);
+        $this->logResponse('addItemsToWantsList', $result);
 
         $this->assertIsArray($result);
 
@@ -185,13 +194,15 @@ class WantslistsTest extends TestCase
     public function testDeleteWantsList(): void
     {
         // Create a wantslist to delete
-        $name = self::TEST_PREFIX . ' Delete ' . date('Y-m-d H:i:s');
+        $name = 'E2ED' . substr(date('is'), -4);
         $gameId = (int) getTestConfig('TEST_GAME_ID', 1);
 
         $createResult = $this->client->wantslist()->createWantsList($name, $gameId);
-        $wantslistId = $createResult['wantslist']['idWantslist'];
+        $this->logResponse('createWantsList', $createResult);
+        $wantslistId = $createResult['wantslist'][0]['idWantsList'];
 
         $result = $this->client->wantslist()->deleteWantsList($wantslistId);
+        $this->logResponse('deleteWantsList', $result);
 
         $this->assertIsArray($result);
 
@@ -218,9 +229,10 @@ class WantslistsTest extends TestCase
         $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
 
         // Step 1: Create wantslist
-        $name = self::TEST_PREFIX . ' Lifecycle ' . date('Y-m-d H:i:s');
+        $name = 'E2EL' . substr(date('is'), -4);
         $createResult = $this->client->wantslist()->createWantsList($name, $gameId);
-        $wantslistId = $createResult['wantslist']['idWantslist'];
+        $this->logResponse('lifecycle_createWantsList', $createResult);
+        $wantslistId = $createResult['wantslist'][0]['idWantsList'];
         info(sprintf('Step 1: Created wantslist %d', $wantslistId));
 
         // Step 2: Add items
@@ -235,11 +247,13 @@ class WantslistsTest extends TestCase
         ]);
 
         $addResult = $this->client->wantslist()->addItemsToWantsList($wantslistId, $items);
+        $this->logResponse('lifecycle_addItems', $addResult);
         $this->assertIsArray($addResult);
         info('Step 2: Added items to wantslist');
 
         // Step 3: Get wantslist with items
         $getResult = $this->client->wantslist()->getWantsList($wantslistId);
+        $this->logResponse('lifecycle_getWantsList', $getResult);
         $this->assertArrayHasKey('wantslist', $getResult);
 
         // Get item ID for editing
@@ -259,6 +273,7 @@ class WantslistsTest extends TestCase
             ]);
 
             $editResult = $this->client->wantslist()->editItemsInWantsList($wantslistId, $editItems);
+            $this->logResponse('lifecycle_editItems', $editResult);
             $this->assertIsArray($editResult);
             info(sprintf('Step 4: Edited item %d (count: 2->4, condition: EX->LP)', $itemId));
 
@@ -268,6 +283,7 @@ class WantslistsTest extends TestCase
             ]);
 
             $deleteItemResult = $this->client->wantslist()->deleteItemsFromWantsList($wantslistId, $deleteItems);
+            $this->logResponse('lifecycle_deleteItems', $deleteItemResult);
             $this->assertIsArray($deleteItemResult);
             info(sprintf('Step 5: Deleted item %d from wantslist', $itemId));
 
@@ -283,6 +299,7 @@ class WantslistsTest extends TestCase
 
         // Step 7: Delete wantslist
         $deleteResult = $this->client->wantslist()->deleteWantsList($wantslistId);
+        $this->logResponse('lifecycle_deleteWantsList', $deleteResult);
         $this->assertIsArray($deleteResult);
         info(sprintf('Step 7: Deleted wantslist %d', $wantslistId));
 
@@ -300,6 +317,7 @@ class WantslistsTest extends TestCase
     public function testCleanupTestWantslists(): void
     {
         $result = $this->client->wantslist()->getWantsLists();
+        $this->logResponse('getWantsLists_cleanup', $result);
 
         if (empty($result['wantslist'])) {
             info('No wantslists to cleanup');
@@ -311,10 +329,10 @@ class WantslistsTest extends TestCase
         foreach ($result['wantslist'] as $wantslist) {
             if (str_starts_with($wantslist['name'], self::TEST_PREFIX)) {
                 try {
-                    $this->client->wantslist()->deleteWantsList($wantslist['idWantslist']);
+                    $this->client->wantslist()->deleteWantsList($wantslist['idWantsList']);
                     $deleted++;
                 } catch (\Throwable $e) {
-                    warning(sprintf('Could not delete wantslist %d: %s', $wantslist['idWantslist'], $e->getMessage()));
+                    warning(sprintf('Could not delete wantslist %d: %s', $wantslist['idWantsList'], $e->getMessage()));
                 }
             }
         }

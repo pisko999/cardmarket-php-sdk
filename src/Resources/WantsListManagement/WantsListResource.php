@@ -87,6 +87,7 @@ final class WantsListResource extends HttpCaller
     public function renameWantsList(int $idWantslist, string $newName): array
     {
         $wantslist = new WantslistEntity(['name' => $newName]);
+        $wantslist->setAction(WantslistEntity::ACTION_EDIT);
 
         return $this->put(sprintf('/wantslist/%d', $idWantslist), $wantslist);
     }

@@ -19,9 +19,54 @@ abstract class TestCase
 
     protected int $skipped = 0;
 
+    protected string $currentTestMethod = '';
+
     public function __construct(\Pisko\CardMarket\Cardmarket $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * Get short class name for file organization.
+     */
+    protected function getShortClassName(): string
+    {
+        return (new \ReflectionClass($this))->getShortName();
+    }
+
+    /**
+     * Call API and optionally log the response.
+     *
+     * @param string $name Description of the API call
+     * @param callable $apiCall The API call to execute
+     * @param bool $forceLog Force logging even if E2E_LOG_RESPONSES is not set
+     *
+     * @return mixed The API response
+     */
+    protected function callApi(string $name, callable $apiCall, bool $forceLog = false): mixed
+    {
+        $response = $apiCall();
+
+        if ($forceLog || isResponseLoggingEnabled()) {
+            $callName = $this->currentTestMethod ? "{$this->currentTestMethod}_{$name}" : $name;
+            saveResponse($callName, $response, $this->getShortClassName());
+        }
+
+        return $response;
+    }
+
+    /**
+     * Log a response manually.
+     *
+     * @param string $name Description/name for the response
+     * @param mixed $response The response data
+     */
+    protected function logResponse(string $name, mixed $response): void
+    {
+        if (isResponseLoggingEnabled()) {
+            $callName = $this->currentTestMethod ? "{$this->currentTestMethod}_{$name}" : $name;
+            saveResponse($callName, $response, $this->getShortClassName());
+        }
     }
 
     /**
@@ -79,6 +124,7 @@ abstract class TestCase
      */
     protected function runTest(string $methodName): void
     {
+        $this->currentTestMethod = $methodName;
         $testName = $this->formatTestName($methodName);
         output("\n▶ {$testName}", 'white');
 
@@ -98,6 +144,8 @@ abstract class TestCase
             }
             $this->failed++;
             $this->results[$methodName] = 'failed';
+        } finally {
+            $this->currentTestMethod = '';
         }
     }
 
@@ -201,11 +249,31 @@ abstract class TestCase
     }
 
     /**
+     * Assert that a value is greater than another value.
+     */
+    protected function assertGreaterThan(int|float $expected, int|float $actual, string $message = ''): void
+    {
+        if ($actual <= $expected) {
+            throw new \RuntimeException(
+                $message ?: sprintf('Assertion failed: expected %s to be greater than %s', $actual, $expected),
+            );
+        }
+    }
+
+    /**
      * Skip the current test.
      */
     protected function skip(string $reason): void
     {
         throw new SkipTestException($reason);
+    }
+
+    /**
+     * Fail the test with a message.
+     */
+    protected function fail(string $message): void
+    {
+        throw new \RuntimeException($message);
     }
 
     /**

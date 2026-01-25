@@ -25,6 +25,7 @@ A comprehensive PHP SDK for the [Cardmarket API 2.0](https://api.cardmarket.com/
 - [Batch Operations](#batch-operations)
 - [Helpers](#helpers)
 - [Error Handling](#error-handling)
+- [Known API Limitations](#known-api-limitations)
 - [Custom Resources](#custom-resources)
 - [Breaking Changes](#breaking-changes)
 - [Testing](#testing)
@@ -82,18 +83,6 @@ Cardmarket offers three types of applications:
 3. **3rd Party App** - For services provided to other users
 
 > **Note:** Some endpoints are restricted based on app type. See the [API documentation](docs/) for details.
-
-### Sandbox vs Production
-
-```php
-// Production (default)
-$httpCreator = new HttpClientCreator();
-
-// Sandbox environment for testing
-$httpCreator = new HttpClientCreator(true); // Pass true for sandbox
-```
-
-> **Important:** Sandbox has limited data and some operations may behave differently.
 
 ## API Resources
 
@@ -522,6 +511,63 @@ UserTypeHelper::COMMERCIAL_USER;   // 'commercial'
 UserTypeHelper::POWERSELLER;       // 'powerseller'
 ```
 
+## Parameter Types
+
+When passing search parameters to API methods, use the correct PHP types:
+
+### Boolean Parameters
+
+Use PHP booleans (`true`/`false`), not strings. The SDK automatically converts them to the API format.
+
+```php
+// ✅ Correct - use PHP booleans
+$articles = $cardmarket->articles()->getArticles($productId, 0, 100, [
+    'isFoil' => true,
+    'isSigned' => false,
+    'isAltered' => false,
+]);
+
+// ❌ Wrong - don't use strings
+$articles = $cardmarket->articles()->getArticles($productId, 0, 100, [
+    'isFoil' => 'true',   // Wrong!
+    'isSigned' => 'false', // Wrong!
+]);
+```
+
+### Integer Parameters
+
+Use PHP integers for IDs and numeric values:
+
+```php
+$products = $cardmarket->products()->findProducts('Black Lotus', 0, 100, [
+    'idGame' => 1,        // Integer
+    'idLanguage' => 1,    // Integer
+    'exact' => true,      // Boolean
+]);
+```
+
+### String Parameters
+
+Use strings for conditions, comments, and text fields:
+
+```php
+$articles = $cardmarket->articles()->getArticles($productId, 0, 100, [
+    'minCondition' => 'NM',  // String: MT, NM, EX, GD, LP, PL, PO
+]);
+```
+
+### Condition Values
+
+| Value | Meaning |
+|-------|---------|
+| `MT` | Mint |
+| `NM` | Near Mint |
+| `EX` | Excellent |
+| `GD` | Good |
+| `LP` | Light Played |
+| `PL` | Played |
+| `PO` | Poor |
+
 ## Error Handling
 
 ```php
@@ -558,6 +604,23 @@ try {
 | 403 | Forbidden - Access denied |
 | 404 | Not Found - Resource doesn't exist |
 | 500+ | Server Error - Cardmarket server issue |
+
+## Known API Limitations
+
+The following are known issues or limitations in the Cardmarket API itself (not SDK bugs):
+
+### Messages API
+
+| Method | Issue |
+|--------|-------|
+| `findMessages()` | **Endpoint broken** - Returns HTTP 400 "This feature is currently unavailable" but **marks all unread messages as read** anyway! Do not use. |
+| `deleteMessagesByUser()` | **Does not delete messages** - API returns 200 OK but messages remain. Use `deleteOneMessageByUser()` to delete individual messages instead. |
+
+### Wantslists API
+
+| Method | Issue |
+|--------|-------|
+| `createWantslist()` | **Name length limit** - Wantslist names are limited to approximately 8 characters. Longer names may be truncated or rejected. |
 
 ## Custom Resources
 

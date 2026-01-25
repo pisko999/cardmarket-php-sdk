@@ -15,6 +15,7 @@ class UpdateArticleStockResourceTest extends ResourceTestCase
         parent::setUp();
     }
 
+    
     public function testUpdateArticleInStock()
     {
         $mockResponse = new MockResponse(json_encode([

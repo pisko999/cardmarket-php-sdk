@@ -11,11 +11,12 @@ declare(strict_types=1);
  *   php e2e/run-tests.php --suite=games      # Run specific suite
  *   php e2e/run-tests.php --test=GamesTest   # Run specific test class
  *   php e2e/run-tests.php --list             # List available tests
+ *   php e2e/run-tests.php --clean            # Delete all saved JSON responses
  *   E2E_DEBUG=true php e2e/run-tests.php     # Run with debug output
  */
 
 // Parse command line arguments first (before bootstrap)
-$options = getopt('', ['suite::', 'test::', 'list', 'help']);
+$options = getopt('', ['suite::', 'test::', 'list', 'clean', 'help']);
 
 if (isset($options['help'])) {
     echo <<<HELP
@@ -28,6 +29,7 @@ Options:
   --suite=NAME    Run specific test suite (games, products, stock, orders, wantslists, account, cart)
   --test=NAME     Run specific test class (e.g., GamesTest)
   --list          List available test suites and classes
+  --clean         Delete all saved JSON responses from responses/ directory
   --help          Show this help message
 
 Environment:
@@ -37,9 +39,33 @@ Examples:
   php e2e/run-tests.php                    # Run all tests
   php e2e/run-tests.php --suite=games      # Run games tests only
   php e2e/run-tests.php --test=GamesTest   # Run GamesTest class
+  php e2e/run-tests.php --clean            # Clean up response files
   E2E_DEBUG=true php e2e/run-tests.php     # With debug output
 
 HELP;
+    exit(0);
+}
+
+// Clean responses directory
+if (isset($options['clean'])) {
+    $responsesDir = __DIR__ . '/responses';
+    $deleted = 0;
+    
+    if (is_dir($responsesDir)) {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($responsesDir, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getExtension() === 'json') {
+                unlink($file->getPathname());
+                $deleted++;
+            }
+        }
+    }
+    
+    echo "\033[32m✓ Deleted {$deleted} JSON response files\033[0m\n";
     exit(0);
 }
 
@@ -101,7 +127,6 @@ if (isset($options['test'])) {
 output("\n" . str_repeat('=', 60), 'blue');
 output('Cardmarket SDK E2E Tests', 'blue');
 output(str_repeat('=', 60), 'blue');
-output('Environment: ' . (($_ENV['CARDMARKET_SANDBOX'] ?? 'false') === 'true' ? 'SANDBOX' : 'PRODUCTION'), 'yellow');
 output('Date: ' . date('Y-m-d H:i:s'), 'white');
 
 $client = createCardmarketClient();

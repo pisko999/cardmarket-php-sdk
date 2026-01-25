@@ -6,9 +6,9 @@ namespace Pisko\CardMarket\Entities;
 
 class ArticlesEntity extends MultipleEntity
 {
-    protected string $childEntity = ArticleBaseEntity::class;
+    protected string $childEntity = ArticleEntity::class;
 
-    public function __construct(ArticleBaseEntity|array $entities)
+    public function __construct(ArticleEntity|ArticleBaseEntity|array $entities)
     {
         parent::__construct($entities);
     }

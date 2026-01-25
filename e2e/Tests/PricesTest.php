@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
-use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Prices API.
@@ -13,51 +12,45 @@ use Pisko\CardMarket\Exception\HttpClientException;
 class PricesTest extends TestCase
 {
     /**
-     * Test getting price guide for a product.
+     * Test getting price guide file.
      */
-    public function testGetProductPriceGuide(): void
+    public function testGetPriceGuideFile(): void
     {
-        $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
-        $result = $this->client->prices()->getProductPriceGuide($productId);
+        $result = $this->client->prices()->getPriceGuideFile();
+        $this->logResponse('getPriceGuideFile', ['type' => gettype($result), 'size' => is_string($result) ? strlen($result) : null]);
 
-        // Returns base64 encoded data or false
+        // Returns CSV content or false
         if ($result === false) {
-            $this->skip('No price guide available for product');
+            $this->skip('No price guide file available');
         }
 
         $this->assertNotEmpty($result);
-        info('Price guide retrieved successfully');
+
+        // Check that it looks like CSV data
+        $lines = explode("\n", (string) $result);
+        $this->assertGreaterThan(1, count($lines), 'Price guide should have multiple lines');
+
+        info(sprintf('Price guide file retrieved (%d lines)', count($lines)));
     }
 
     /**
-     * Test getting price guide for non-existent product.
+     * Test price guide file consistency.
      */
-    public function testGetPriceGuideForNonExistentProductFails(): void
+    public function testPriceGuideFileConsistency(): void
     {
-        $this->assertThrows(
-            fn () => $this->client->prices()->getProductPriceGuide(999999999),
-            HttpClientException::class,
-        );
-    }
-
-    /**
-     * Test getting price guide for multiple products.
-     */
-    public function testGetPriceGuideForMultipleProducts(): void
-    {
-        $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
-
-        // Get price guide for same product twice - should work both times
-        $result1 = $this->client->prices()->getProductPriceGuide($productId);
-        $result2 = $this->client->prices()->getProductPriceGuide($productId);
+        // Get price guide twice - should return same result
+        $result1 = $this->client->prices()->getPriceGuideFile();
+        $this->logResponse('getPriceGuideFile_1', ['type' => gettype($result1), 'size' => is_string($result1) ? strlen($result1) : null]);
+        $result2 = $this->client->prices()->getPriceGuideFile();
+        $this->logResponse('getPriceGuideFile_2', ['type' => gettype($result2), 'size' => is_string($result2) ? strlen($result2) : null]);
 
         if ($result1 === false && $result2 === false) {
-            $this->skip('No price guide available for product');
+            $this->skip('No price guide file available');
         }
 
         // Both should return same result
         $this->assertEquals($result1, $result2, 'Price guide should be consistent');
 
-        info('Multiple price guide requests successful and consistent');
+        info('Price guide file requests are consistent');
     }
 }

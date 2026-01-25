@@ -19,6 +19,7 @@ class ArticlesTest extends TestCase
     {
         $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
         $result = $this->client->articles()->getArticles($productId);
+        $this->logResponse('getArticles', $result);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('article', $result);
@@ -55,11 +56,11 @@ class ArticlesTest extends TestCase
         $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
         $searchData = [
             'minCondition' => 'EX',
-            'isFoil' => 'false',
-            'maxResults' => 10,
+            'isFoil' => false,
         ];
 
-        $result = $this->client->articles()->getArticles($productId, $searchData);
+        $result = $this->client->articles()->getArticles($productId, 0, 10, $searchData);
+        $this->logResponse('getArticles_filtered', $result);
 
         $this->assertIsArray($result);
         info(sprintf('Found %d filtered articles', count($result['article'] ?? [])));
@@ -72,14 +73,14 @@ class ArticlesTest extends TestCase
     {
         $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
         $searchData = [
-            'minCondition' => 'MT', // Mint only
-            'isFoil' => 'true',
-            'isSigned' => 'true',
-            'isAltered' => 'true', // Very unlikely combination
-            'maxResults' => 10,
+            'minCondition' => 'NM', // Mint only
+            'isFoil' => true,
+            'isSigned' => false,
+            'isAltered' => false, // Very unlikely combination
         ];
 
-        $result = $this->client->articles()->getArticles($productId, $searchData);
+        $result = $this->client->articles()->getArticles($productId, 0, 10, $searchData);
+        $this->logResponse('getArticles_strict', $result);
 
         $this->assertIsArray($result);
         $count = count($result['article'] ?? []);
@@ -98,6 +99,7 @@ class ArticlesTest extends TestCase
         }
 
         $result = $this->client->articles()->getArticlesByUser((int) $userId);
+        $this->logResponse('getArticlesByUser', $result);
 
         $this->assertIsArray($result);
         info(sprintf('Found %d articles for user %s', count($result['article'] ?? []), $userId));

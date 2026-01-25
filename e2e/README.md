@@ -10,7 +10,7 @@ These tests run against the **LIVE** Cardmarket API and may:
 - Send messages
 - Affect your account settings
 
-**Use a dedicated test account or the Cardmarket Sandbox server!**
+**Use a dedicated test account with limited stock/funds!**
 
 ## Setup
 
@@ -25,7 +25,6 @@ These tests run against the **LIVE** Cardmarket API and may:
    CARDMARKET_APP_SECRET=your_app_secret
    CARDMARKET_ACCESS_TOKEN=your_access_token
    CARDMARKET_ACCESS_SECRET=your_access_secret
-   CARDMARKET_SANDBOX=true
    ```
 
 3. Get your API credentials at: https://www.cardmarket.com/en/Magic/Account/API
@@ -78,7 +77,6 @@ php e2e/run-tests.php --list
 | `CARDMARKET_APP_SECRET` | ✅ | Your application secret |
 | `CARDMARKET_ACCESS_TOKEN` | ✅ | Your access token |
 | `CARDMARKET_ACCESS_SECRET` | ✅ | Your access secret |
-| `CARDMARKET_SANDBOX` | ❌ | Use sandbox server (default: true) |
 | `TEST_GAME_ID` | ❌ | Game ID for testing (default: 1 = MTG) |
 | `TEST_PRODUCT_ID` | ❌ | Product ID for testing (default: 273799) |
 | `TEST_EXPANSION_ID` | ❌ | Expansion ID for testing (default: 1525) |
@@ -113,6 +111,6 @@ e2e/
 
 ## Notes
 
-- Tests that modify data (stock, wantslists, cart) are protected and require sandbox mode or explicit configuration.
+- Tests that modify data (stock, wantslists, cart) are protected and require explicit ENABLE_* environment variables.
 - E2E test articles are marked with comments containing "E2E Test" for easy identification and cleanup.
 - E2E wantslists are prefixed with "E2E" for easy identification.

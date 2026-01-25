@@ -7,3 +7,4 @@ vendor
 build
 .infection/
 e2e/.env
+e2e/responses/
