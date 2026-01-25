@@ -212,4 +212,30 @@ class CartTest extends TestCase
             $this->skip('Could not complete cart lifecycle test');
         }
     }
+
+    /**
+     * Cleanup any items left in cart from failed tests.
+     *
+     * Note: This only cleans up if explicitly enabled, as it would remove
+     * user's real cart items too.
+     */
+    public function testCleanupCart(): void
+    {
+        // Only cleanup in sandbox mode or if explicitly enabled
+        if (($_ENV['CARDMARKET_SANDBOX'] ?? 'false') !== 'true' && ($_ENV['ENABLE_CART_CLEANUP'] ?? 'false') !== 'true') {
+            $this->skip('Cart cleanup only enabled in sandbox mode or with ENABLE_CART_CLEANUP=true');
+        }
+
+        $cart = $this->client->cart()->getCart();
+
+        if (empty($cart['shoppingCart']['seller'])) {
+            info('Cart is already empty');
+
+            return;
+        }
+
+        // Empty the cart
+        $this->client->cart()->emptyCart();
+        info('Cart cleaned up');
+    }
 }

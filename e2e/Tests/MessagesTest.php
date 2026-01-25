@@ -178,4 +178,33 @@ class MessagesTest extends TestCase
         $this->assertIsArray($result);
         info(sprintf('Deleted message thread with user %d', $userId));
     }
+
+    /**
+     * Cleanup any E2E test message threads.
+     */
+    public function testCleanupTestMessages(): void
+    {
+        $threads = $this->client->messages()->getMessagesThread();
+
+        if (empty($threads['thread'])) {
+            info('No message threads to cleanup');
+
+            return;
+        }
+
+        $deleted = 0;
+        foreach ($threads['thread'] as $thread) {
+            // Check if last message contains our test prefix
+            if (isset($thread['message']) && str_contains($thread['message'], self::TEST_PREFIX)) {
+                try {
+                    $this->client->messages()->deleteMessagesByUser($thread['partner']['idUser']);
+                    $deleted++;
+                } catch (\Throwable $e) {
+                    warning(sprintf('Could not delete thread with user %d: %s', $thread['partner']['idUser'], $e->getMessage()));
+                }
+            }
+        }
+
+        info(sprintf('Cleaned up %d E2E test message threads', $deleted));
+    }
 }

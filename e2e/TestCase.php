@@ -36,9 +36,32 @@ abstract class TestCase
         output('Running: ' . $reflection->getShortName(), 'blue');
         output(str_repeat('=', 60), 'blue');
 
+        // Separate cleanup tests from regular tests
+        $regularTests = [];
+        $cleanupTests = [];
+
         foreach ($methods as $method) {
-            if (str_starts_with($method->getName(), 'test')) {
-                $this->runTest($method->getName());
+            $name = $method->getName();
+            if (str_starts_with($name, 'test')) {
+                if (str_contains(strtolower($name), 'cleanup')) {
+                    $cleanupTests[] = $name;
+                } else {
+                    $regularTests[] = $name;
+                }
+            }
+        }
+
+        // Run regular tests first
+        foreach ($regularTests as $testName) {
+            $this->runTest($testName);
+        }
+
+        // Always run cleanup tests at the end, even if other tests failed
+        if (!empty($cleanupTests)) {
+            output("\n" . str_repeat('-', 40), 'yellow');
+            output('Running cleanup...', 'yellow');
+            foreach ($cleanupTests as $testName) {
+                $this->runTest($testName);
             }
         }
 
