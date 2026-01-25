@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
+use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Games API.
@@ -35,5 +36,22 @@ class GamesTest extends TestCase
         }
 
         $this->assertTrue($mtgFound, 'Magic: The Gathering should be in games list');
+    }
+
+    /**
+     * Test games list is consistent on multiple calls.
+     */
+    public function testGamesListConsistency(): void
+    {
+        $result1 = $this->client->games()->getGamesList();
+        $result2 = $this->client->games()->getGamesList();
+
+        $this->assertEquals(
+            count($result1['game']),
+            count($result2['game']),
+            'Games list should be consistent between calls',
+        );
+
+        info('Games list consistency verified');
     }
 }

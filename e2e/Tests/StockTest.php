@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
+use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Stock API.
@@ -13,6 +14,8 @@ use CardmarketE2E\TestCase;
  */
 class StockTest extends TestCase
 {
+    private const TEST_COMMENT = '[E2E Test Item] - Do not buy';
+
     private ?int $createdArticleId = null;
 
     /**
@@ -54,10 +57,10 @@ class StockTest extends TestCase
         $resource->add([
             'idProduct' => $productId,
             'count' => 1,
-            'price' => 999.99, // High price so no one buys it
+            'price' => 9999.99, // Extremely high price so no one buys it
             'condition' => 'NM',
             'idLanguage' => 1,
-            'comments' => 'E2E Test - will be deleted',
+            'comments' => self::TEST_COMMENT,
             'isFoil' => false,
             'isSigned' => false,
             'isAltered' => false,
@@ -74,17 +77,38 @@ class StockTest extends TestCase
                 : $result['inserted']['idArticle'];
 
             $this->createdArticleId = (int) $articleId;
-            info(sprintf('Created article ID: %d', $this->createdArticleId));
+            info(sprintf('Created article ID: %d with comment "%s"', $this->createdArticleId, self::TEST_COMMENT));
+        } elseif (!empty($result['inserted']) && isset($result['inserted'][0]['idArticle'])) {
+            $this->createdArticleId = (int) $result['inserted'][0]['idArticle'];
+            info(sprintf('Created article ID: %d with comment "%s"', $this->createdArticleId, self::TEST_COMMENT));
         } else {
-            // Try to get from different structure
-            if (!empty($result['inserted']) && isset($result['inserted'][0]['idArticle'])) {
-                $this->createdArticleId = (int) $result['inserted'][0]['idArticle'];
-                info(sprintf('Created article ID: %d', $this->createdArticleId));
-            } else {
-                $this->debug('Insert result', $result);
-                success('Article added (ID not extractable from response)');
-            }
+            $this->debug('Insert result', $result);
+            success('Article added (ID not extractable from response)');
         }
+    }
+
+    /**
+     * Test adding article with invalid product ID fails.
+     */
+    public function testAddArticleWithInvalidProductIdFails(): void
+    {
+        $resource = $this->client->addArticleStock();
+        $resource->add([
+            'idProduct' => 999999999, // Non-existent product
+            'count' => 1,
+            'price' => 1.00,
+            'condition' => 'NM',
+            'idLanguage' => 1,
+            'comments' => self::TEST_COMMENT . ' - Invalid Test',
+            'isFoil' => false,
+            'isSigned' => false,
+            'isAltered' => false,
+        ]);
+
+        $this->assertThrows(
+            fn () => $resource->send(),
+            HttpClientException::class,
+        );
     }
 
     /**
@@ -108,6 +132,7 @@ class StockTest extends TestCase
         $resource->add([
             'idArticle' => $articleId,
             'price' => $newPrice,
+            'comments' => self::TEST_COMMENT . ' - Updated',
         ]);
 
         $result = $resource->send();
@@ -115,15 +140,34 @@ class StockTest extends TestCase
         $this->assertIsArray($result);
         info(sprintf('Updated article %d price: %.2f -> %.2f', $articleId, $originalPrice, $newPrice));
 
-        // Revert the price
+        // Revert the price and comment
         $resource = $this->client->updateArticleStock();
         $resource->add([
             'idArticle' => $articleId,
             'price' => $originalPrice,
+            'comments' => $article['comments'] ?? '',
         ]);
         $resource->send();
 
-        info(sprintf('Reverted article %d price back to %.2f', $articleId, $originalPrice));
+        info(sprintf('Reverted article %d back to original state', $articleId));
+    }
+
+    /**
+     * Test updating non-existent article fails.
+     */
+    public function testUpdateNonExistentArticleFails(): void
+    {
+        $resource = $this->client->updateArticleStock();
+        $resource->add([
+            'idArticle' => 999999999999, // Non-existent article
+            'price' => 1.00,
+            'comments' => self::TEST_COMMENT . ' - Should Fail',
+        ]);
+
+        $this->assertThrows(
+            fn () => $resource->send(),
+            HttpClientException::class,
+        );
     }
 
     /**
@@ -145,6 +189,17 @@ class StockTest extends TestCase
         $this->assertArrayHasKey('article', $result);
 
         info(sprintf('Stock article %d retrieved successfully', $articleId));
+    }
+
+    /**
+     * Test getting non-existent stock article fails.
+     */
+    public function testGetNonExistentStockArticleFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->stock()->getStockArticle(999999999999),
+            HttpClientException::class,
+        );
     }
 
     /**
@@ -175,9 +230,87 @@ class StockTest extends TestCase
     }
 
     /**
+     * Test full article lifecycle: add -> update -> delete.
+     */
+    public function testArticleLifecycle(): void
+    {
+        $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
+
+        // Step 1: Add article
+        $addResource = $this->client->addArticleStock();
+        $addResource->add([
+            'idProduct' => $productId,
+            'count' => 1,
+            'price' => 8888.88,
+            'condition' => 'LP',
+            'idLanguage' => 1,
+            'comments' => self::TEST_COMMENT . ' - Lifecycle Test',
+            'isFoil' => false,
+            'isSigned' => false,
+            'isAltered' => false,
+        ]);
+
+        $addResult = $addResource->send();
+        $this->assertIsArray($addResult);
+
+        // Extract article ID
+        $articleId = null;
+        if (!empty($addResult['inserted']['idArticle'])) {
+            $articleId = is_array($addResult['inserted']['idArticle'])
+                ? (int) $addResult['inserted']['idArticle'][0]
+                : (int) $addResult['inserted']['idArticle'];
+        } elseif (!empty($addResult['inserted']) && isset($addResult['inserted'][0]['idArticle'])) {
+            $articleId = (int) $addResult['inserted'][0]['idArticle'];
+        }
+
+        if ($articleId === null) {
+            $this->debug('Could not extract article ID', $addResult);
+            $this->skip('Could not extract article ID from add response');
+        }
+
+        info(sprintf('Step 1: Created article %d', $articleId));
+
+        // Step 2: Update article
+        $updateResource = $this->client->updateArticleStock();
+        $updateResource->add([
+            'idArticle' => $articleId,
+            'price' => 7777.77,
+            'comments' => self::TEST_COMMENT . ' - Lifecycle Updated',
+        ]);
+
+        $updateResult = $updateResource->send();
+        $this->assertIsArray($updateResult);
+        info(sprintf('Step 2: Updated article %d', $articleId));
+
+        // Step 3: Delete article
+        $deleteResource = $this->client->deleteArticleStock();
+        $deleteResource->add([
+            'idArticle' => $articleId,
+            'count' => 1,
+        ]);
+
+        $deleteResult = $deleteResource->send();
+        $this->assertIsArray($deleteResult);
+        info(sprintf('Step 3: Deleted article %d', $articleId));
+
+        // Step 4: Try to delete again - should fail
+        $deleteResource2 = $this->client->deleteArticleStock();
+        $deleteResource2->add([
+            'idArticle' => $articleId,
+            'count' => 1,
+        ]);
+
+        $this->assertThrows(
+            fn () => $deleteResource2->send(),
+            HttpClientException::class,
+        );
+        info('Step 4: Double delete correctly rejected by Cardmarket');
+    }
+
+    /**
      * Test deleting article from stock.
      *
-     * This should run last.
+     * This cleans up E2E test articles.
      */
     public function testDeleteArticleFromStock(): void
     {
@@ -188,12 +321,11 @@ class StockTest extends TestCase
             $this->skip('No articles in stock to delete');
         }
 
-        // Find an article with our E2E test comment or very high price
+        // Find an article with our E2E test comment
         $articleToDelete = null;
         foreach ($stockResult['article'] as $article) {
             if (
-                (isset($article['comments']) && str_contains($article['comments'], 'E2E Test'))
-                || $article['price'] >= 999
+                isset($article['comments']) && str_contains($article['comments'], '[E2E Test Item]')
             ) {
                 $articleToDelete = $article;
                 break;
@@ -201,7 +333,7 @@ class StockTest extends TestCase
         }
 
         if ($articleToDelete === null) {
-            $this->skip('No E2E test article found to delete');
+            $this->skip('No E2E test article found to delete (looking for "[E2E Test Item]" comment)');
         }
 
         $articleId = $articleToDelete['idArticle'];
@@ -216,5 +348,56 @@ class StockTest extends TestCase
 
         $this->assertIsArray($result);
         info(sprintf('Deleted article %d from stock', $articleId));
+    }
+
+    /**
+     * Test deleting non-existent article fails.
+     */
+    public function testDeleteNonExistentArticleFails(): void
+    {
+        $resource = $this->client->deleteArticleStock();
+        $resource->add([
+            'idArticle' => 999999999999, // Non-existent article
+            'count' => 1,
+        ]);
+
+        $this->assertThrows(
+            fn () => $resource->send(),
+            HttpClientException::class,
+        );
+    }
+
+    /**
+     * Cleanup all remaining E2E test articles.
+     */
+    public function testCleanupTestArticles(): void
+    {
+        $stockResult = $this->client->stock()->getStock();
+
+        if (empty($stockResult['article'])) {
+            info('No articles in stock to cleanup');
+
+            return;
+        }
+
+        $deleted = 0;
+        foreach ($stockResult['article'] as $article) {
+            if (isset($article['comments']) && str_contains($article['comments'], '[E2E Test Item]')) {
+                $resource = $this->client->deleteArticleStock();
+                $resource->add([
+                    'idArticle' => $article['idArticle'],
+                    'count' => $article['count'],
+                ]);
+
+                try {
+                    $resource->send();
+                    $deleted++;
+                } catch (\Throwable $e) {
+                    warning(sprintf('Could not delete article %d: %s', $article['idArticle'], $e->getMessage()));
+                }
+            }
+        }
+
+        info(sprintf('Cleaned up %d E2E test articles', $deleted));
     }
 }

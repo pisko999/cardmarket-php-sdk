@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
+use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Articles API.
@@ -36,6 +37,17 @@ class ArticlesTest extends TestCase
     }
 
     /**
+     * Test getting articles for non-existent product.
+     */
+    public function testGetArticlesForNonExistentProductFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->articles()->getArticles(999999999),
+            HttpClientException::class,
+        );
+    }
+
+    /**
      * Test getting articles with filters.
      */
     public function testGetArticlesWithFilters(): void
@@ -54,6 +66,27 @@ class ArticlesTest extends TestCase
     }
 
     /**
+     * Test getting articles with strict filters that yield no results.
+     */
+    public function testGetArticlesWithStrictFilters(): void
+    {
+        $productId = (int) getTestConfig('TEST_PRODUCT_ID', 273799);
+        $searchData = [
+            'minCondition' => 'MT', // Mint only
+            'isFoil' => 'true',
+            'isSigned' => 'true',
+            'isAltered' => 'true', // Very unlikely combination
+            'maxResults' => 10,
+        ];
+
+        $result = $this->client->articles()->getArticles($productId, $searchData);
+
+        $this->assertIsArray($result);
+        $count = count($result['article'] ?? []);
+        info(sprintf('Found %d articles with strict filters (expected 0 or few)', $count));
+    }
+
+    /**
      * Test getting articles by user.
      */
     public function testGetArticlesByUser(): void
@@ -67,6 +100,17 @@ class ArticlesTest extends TestCase
         $result = $this->client->articles()->getArticlesByUser((int) $userId);
 
         $this->assertIsArray($result);
-        info(sprintf('Found %d articles for user %d', count($result['article'] ?? []), $userId));
+        info(sprintf('Found %d articles for user %s', count($result['article'] ?? []), $userId));
+    }
+
+    /**
+     * Test getting articles by non-existent user.
+     */
+    public function testGetArticlesByNonExistentUserFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->articles()->getArticlesByUser(999999999),
+            HttpClientException::class,
+        );
     }
 }

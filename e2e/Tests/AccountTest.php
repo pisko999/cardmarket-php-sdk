@@ -38,6 +38,29 @@ class AccountTest extends TestCase
     }
 
     /**
+     * Test account information is consistent.
+     */
+    public function testAccountInformationConsistency(): void
+    {
+        $result1 = $this->client->account()->getAccountInformation();
+        $result2 = $this->client->account()->getAccountInformation();
+
+        $this->assertEquals(
+            $result1['account']['idUser'],
+            $result2['account']['idUser'],
+            'Account ID should be consistent',
+        );
+
+        $this->assertEquals(
+            $result1['account']['username'],
+            $result2['account']['username'],
+            'Username should be consistent',
+        );
+
+        info('Account information consistency verified');
+    }
+
+    /**
      * Test vacation status.
      */
     public function testVacationStatus(): void
@@ -50,5 +73,31 @@ class AccountTest extends TestCase
 
         // We don't toggle vacation as it could affect real orders
         success('Vacation status check completed');
+    }
+
+    /**
+     * Test account has expected fields.
+     */
+    public function testAccountHasExpectedFields(): void
+    {
+        $result = $this->client->account()->getAccountInformation();
+        $account = $result['account'];
+
+        // Check for expected fields
+        $expectedFields = ['idUser', 'username', 'country', 'isCommercial', 'onVacation'];
+
+        foreach ($expectedFields as $field) {
+            $this->assertTrue(
+                array_key_exists($field, $account),
+                "Account should have field: {$field}",
+            );
+        }
+
+        info(sprintf(
+            'Account fields verified: %s, Country: %s, Commercial: %s',
+            $account['username'],
+            $account['country'] ?? 'N/A',
+            ($account['isCommercial'] ?? false) ? 'Yes' : 'No',
+        ));
     }
 }

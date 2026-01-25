@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
+use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Metaproducts API.
@@ -35,6 +36,25 @@ class MetaproductsTest extends TestCase
 
         // Save for next test
         $this->metaproductId = $result['metaproduct'][0]['idMetaproduct'];
+    }
+
+    /**
+     * Test finding metaproducts with no results.
+     */
+    public function testFindMetaProductsNoResults(): void
+    {
+        $searchData = [
+            'search' => 'XyzNonExistentCard12345Name67890',
+            'idGame' => 1,
+        ];
+
+        $result = $this->client->metaproducts()->findMetaProducts($searchData);
+
+        $this->assertIsArray($result);
+        $count = count($result['metaproduct'] ?? []);
+        $this->assertEquals(0, $count, 'Expected 0 metaproducts for non-existent search');
+
+        info('No metaproducts found for non-existent search (expected)');
     }
 
     /**
@@ -72,5 +92,16 @@ class MetaproductsTest extends TestCase
             $metaproduct['idMetaproduct'],
             count($metaproduct['product']),
         ));
+    }
+
+    /**
+     * Test getting non-existent metaproduct details.
+     */
+    public function testGetNonExistentMetaProductDetailsFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->metaproducts()->getMetaProductDetails(999999999),
+            HttpClientException::class,
+        );
     }
 }

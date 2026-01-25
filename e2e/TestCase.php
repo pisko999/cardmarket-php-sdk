@@ -186,6 +186,70 @@ abstract class TestCase
     }
 
     /**
+     * Assert that a callable throws an exception.
+     *
+     * @param callable $callable The callable that should throw
+     * @param string|null $expectedExceptionClass Expected exception class (null = any)
+     * @param string|null $expectedMessageContains Expected message substring (null = any)
+     */
+    protected function assertThrows(
+        callable $callable,
+        ?string $expectedExceptionClass = null,
+        ?string $expectedMessageContains = null,
+        string $message = '',
+    ): void {
+        try {
+            $callable();
+            throw new \RuntimeException(
+                $message ?: 'Expected exception was not thrown',
+            );
+        } catch (\Throwable $e) {
+            // Re-throw if this is our own "no exception" error
+            if ($e->getMessage() === ($message ?: 'Expected exception was not thrown')) {
+                throw $e;
+            }
+
+            // Check exception class if specified
+            if ($expectedExceptionClass !== null && !($e instanceof $expectedExceptionClass)) {
+                throw new \RuntimeException(
+                    $message ?: sprintf(
+                        'Expected exception of type %s, got %s: %s',
+                        $expectedExceptionClass,
+                        $e::class,
+                        $e->getMessage(),
+                    ),
+                );
+            }
+
+            // Check message contains if specified
+            if ($expectedMessageContains !== null && !str_contains($e->getMessage(), $expectedMessageContains)) {
+                throw new \RuntimeException(
+                    $message ?: sprintf(
+                        'Expected exception message to contain "%s", got: %s',
+                        $expectedMessageContains,
+                        $e->getMessage(),
+                    ),
+                );
+            }
+
+            // Exception was thrown as expected
+            info(sprintf('Caught expected exception: %s', $e->getMessage()));
+        }
+    }
+
+    /**
+     * Assert that a value is an instance of a class.
+     */
+    protected function assertInstanceOf(string $className, mixed $value, string $message = ''): void
+    {
+        if (!($value instanceof $className)) {
+            throw new \RuntimeException(
+                $message ?: sprintf('Expected instance of %s, got %s', $className, is_object($value) ? $value::class : gettype($value)),
+            );
+        }
+    }
+
+    /**
      * Log debug information.
      */
     protected function debug(string $message, mixed $data = null): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
+use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Orders API.
@@ -58,6 +59,22 @@ class OrdersTest extends TestCase
     }
 
     /**
+     * Test getting orders with all valid states.
+     */
+    public function testGetOrdersWithAllStates(): void
+    {
+        // Test all valid states: 1=bought, 2=paid, 4=sent, 8=received, 32=lost, 64=cancelled
+        $states = [1, 2, 4, 8, 32, 64];
+
+        foreach ($states as $state) {
+            $result = $this->client->orders()->getOrders('seller', $state);
+            $this->assertIsArray($result);
+        }
+
+        info('All order states tested successfully');
+    }
+
+    /**
      * Test getting specific order details.
      */
     public function testGetOrderDetails(): void
@@ -84,5 +101,59 @@ class OrdersTest extends TestCase
         $this->assertEquals($orderId, $order['idOrder']);
 
         info(sprintf('Order %d details retrieved successfully', $orderId));
+    }
+
+    /**
+     * Test getting non-existent order fails.
+     */
+    public function testGetNonExistentOrderFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->orders()->getOrder(999999999),
+            HttpClientException::class,
+        );
+    }
+
+    /**
+     * Test changing state of non-existent order fails.
+     */
+    public function testChangeStateOfNonExistentOrderFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->orders()->changeOrderState(999999999, 'send'),
+            HttpClientException::class,
+        );
+    }
+
+    /**
+     * Test adding tracking to non-existent order fails.
+     */
+    public function testAddTrackingToNonExistentOrderFails(): void
+    {
+        $trackingEntity = new \Pisko\CardMarket\Entities\TrackingNumberEntity([
+            'trackingNumber' => 'TEST123456',
+        ]);
+
+        $this->assertThrows(
+            fn () => $this->client->orders()->setTrackingNumber(999999999, $trackingEntity),
+            HttpClientException::class,
+        );
+    }
+
+    /**
+     * Test adding evaluation to non-existent order fails.
+     */
+    public function testAddEvaluationToNonExistentOrderFails(): void
+    {
+        $evaluationEntity = new \Pisko\CardMarket\Entities\EvaluationEntity([
+            'evaluationGrade' => 2, // Good
+            'comment' => '[E2E Test] This should fail',
+            'complaint' => [],
+        ]);
+
+        $this->assertThrows(
+            fn () => $this->client->orders()->setEvaluation(999999999, $evaluationEntity),
+            HttpClientException::class,
+        );
     }
 }

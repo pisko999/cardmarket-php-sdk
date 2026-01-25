@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace CardmarketE2E\Tests;
 
 use CardmarketE2E\TestCase;
+use Pisko\CardMarket\Entities\MessageEntity;
+use Pisko\CardMarket\Exception\HttpClientException;
 
 /**
  * E2E Tests for Messages API.
  */
 class MessagesTest extends TestCase
 {
+    private const TEST_PREFIX = '[E2E Test]';
+
     /**
      * Test getting messages thread.
      */
@@ -65,6 +69,17 @@ class MessagesTest extends TestCase
     }
 
     /**
+     * Test getting messages with non-existent user.
+     */
+    public function testGetMessagesByNonExistentUserFails(): void
+    {
+        $this->assertThrows(
+            fn () => $this->client->messages()->getMessagesThreadByUser(999999999),
+            HttpClientException::class,
+        );
+    }
+
+    /**
      * Test sending a message.
      *
      * WARNING: This actually sends a message!
@@ -77,20 +92,90 @@ class MessagesTest extends TestCase
             $this->skip('TEST_OTHER_USER_ID not configured');
         }
 
-        // Only send if in sandbox mode
-        if (($_ENV['CARDMARKET_SANDBOX'] ?? 'false') !== 'true') {
-            $this->skip('Message sending only enabled in sandbox mode');
+        // Only send if in sandbox mode or explicitly enabled
+        if (($_ENV['CARDMARKET_SANDBOX'] ?? 'false') !== 'true' && ($_ENV['ENABLE_MESSAGE_TESTS'] ?? 'false') !== 'true') {
+            $this->skip('Message sending only enabled in sandbox mode or with ENABLE_MESSAGE_TESTS=true');
         }
 
-        $message = new \Pisko\CardMarket\Entities\MessageEntity([
+        $message = new MessageEntity([
             'idOtherUser' => (int) $userId,
-            'message' => 'E2E Test message - ' . date('Y-m-d H:i:s'),
+            'message' => self::TEST_PREFIX . ' Automated test message - ' . date('Y-m-d H:i:s'),
         ]);
 
         $result = $this->client->messages()->sendMessage($message);
 
         $this->assertIsArray($result);
 
-        info(sprintf('Sent test message to user %d', $userId));
+        info(sprintf('Sent test message to user %d', (int) $userId));
+    }
+
+    /**
+     * Test sending message to non-existent user fails.
+     */
+    public function testSendMessageToNonExistentUserFails(): void
+    {
+        $message = new MessageEntity([
+            'idOtherUser' => 999999999,
+            'message' => self::TEST_PREFIX . ' This should fail',
+        ]);
+
+        $this->assertThrows(
+            fn () => $this->client->messages()->sendMessage($message),
+            HttpClientException::class,
+        );
+    }
+
+    /**
+     * Test sending empty message fails.
+     */
+    public function testSendEmptyMessageFails(): void
+    {
+        $userId = getTestConfig('TEST_OTHER_USER_ID');
+
+        if (empty($userId)) {
+            $this->skip('TEST_OTHER_USER_ID not configured');
+        }
+
+        $message = new MessageEntity([
+            'idOtherUser' => (int) $userId,
+            'message' => '', // Empty message
+        ]);
+
+        $this->assertThrows(
+            fn () => $this->client->messages()->sendMessage($message),
+            HttpClientException::class,
+        );
+    }
+
+    /**
+     * Test deleting message thread.
+     */
+    public function testDeleteMessageThread(): void
+    {
+        // First get threads to find one to delete
+        $threads = $this->client->messages()->getMessagesThread();
+
+        if (empty($threads['thread'])) {
+            $this->skip('No message threads to test deletion');
+        }
+
+        // Find an E2E test thread if possible, or skip
+        $threadToDelete = null;
+        foreach ($threads['thread'] as $thread) {
+            if (isset($thread['message']) && str_contains($thread['message'], self::TEST_PREFIX)) {
+                $threadToDelete = $thread;
+                break;
+            }
+        }
+
+        if ($threadToDelete === null) {
+            $this->skip('No E2E test message thread found to delete');
+        }
+
+        $userId = $threadToDelete['partner']['idUser'];
+        $result = $this->client->messages()->deleteMessagesByUser($userId);
+
+        $this->assertIsArray($result);
+        info(sprintf('Deleted message thread with user %d', $userId));
     }
 }
