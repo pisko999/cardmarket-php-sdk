@@ -4,7 +4,9 @@
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.1-blue)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-A comprehensive PHP SDK for the [Cardmarket API 2.0](https://api.cardmarket.com/ws/documentation/API_2.0:Main_Page), providing easy access to all marketplace features including stock management, order handling, wantslists, and more.
+> ⚠️ **API URL Change (v2.3.0+):** Cardmarket has migrated to a new API endpoint. This SDK now uses `apiv2.cardmarket.com` instead of `api.cardmarket.com`. The old URL will be disabled by **May 1, 2026**. Update to v2.3.0+ to ensure continued functionality.
+
+A comprehensive PHP SDK for the [Cardmarket API 2.0](https://apiv2.cardmarket.com/ws/documentation/API_2.0:Main_Page), providing easy access to all marketplace features including stock management, order handling, wantslists, and more.
 
 > **Note:** This SDK is a fork of the original [mamoot64/cardmarket-php-sdk](https://github.com/mamoot64/cardmarket-php-sdk) by Nicolas Perussel, extended with additional features, bug fixes, and comprehensive test coverage.
 

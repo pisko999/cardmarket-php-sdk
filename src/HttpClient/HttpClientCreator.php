@@ -10,7 +10,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpClientCreator
 {
-    public const API_URL = 'https://api.cardmarket.com/ws/v2.0/output.json';
+    public const API_URL = 'https://apiv2.cardmarket.com/ws/v2.0/output.json';
 
     /**
      * @var array

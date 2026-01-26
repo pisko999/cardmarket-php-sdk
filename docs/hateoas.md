@@ -122,7 +122,7 @@ Links can change based on the current state of a resource. For example, an order
 
 ❌ **Don't do this:**
 ```php
-$articlesUrl = "https://api.cardmarket.com/ws/v2.0/articles/" . $productId;
+$articlesUrl = "https://apiv2.cardmarket.com/ws/v2.0/articles/" . $productId;
 ```
 
 ✅ **Do this:**

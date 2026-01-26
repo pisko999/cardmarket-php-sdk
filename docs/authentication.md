@@ -97,7 +97,7 @@ We have compiled simple working examples to show you how to request the API usin
 
 For these examples we use:
 
-- the `/account` request from the API 1.1: `GET https://api.cardmarket.com/ws/v1.1/account`
+- the `/account` request from the API 1.1: `GET https://apiv2.cardmarket.com/ws/v1.1/account`
 - the App Token, App Secret, Access Token, Access Token Secret shown above
 - **Timestamp:** `1407917892`
 - **Nonce:** `53eb1f44909d6`

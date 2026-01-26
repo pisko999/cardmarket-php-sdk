@@ -10,7 +10,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 /**
  * Class HttpClientException.
  *
- * https://api.cardmarket.com/ws/documentation/API_2.0:Response_Codes
+ * https://apiv2.cardmarket.com/ws/documentation/API_2.0:Response_Codes
  *
  * @author Nicolas Perussel <nicolas.perussel@gmail.com>
  */

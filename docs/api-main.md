@@ -46,9 +46,9 @@ With 1.1 we introduced JSON as an additional response format for all requests. Y
 
 ### Examples
 
-- `GET https://api.cardmarket.com/ws/v2.0/games` will return Cardmarket's supported games as XML (because XML is standard).
-- `GET https://api.cardmarket.com/ws/v2.0/output.xml/games` will return Cardmarket's supported games as XML.
-- `GET https://api.cardmarket.com/ws/v2.0/output.json/games` will return Cardmarket's supported games as JSON.
+- `GET https://apiv2.cardmarket.com/ws/v2.0/games` will return Cardmarket's supported games as XML (because XML is standard).
+- `GET https://apiv2.cardmarket.com/ws/v2.0/output.xml/games` will return Cardmarket's supported games as XML.
+- `GET https://apiv2.cardmarket.com/ws/v2.0/output.json/games` will return Cardmarket's supported games as JSON.
 
 ### Entities
 
@@ -87,20 +87,20 @@ Additional services provided by the API including captcha verification and other
 
 ### Production
 ```
-https://api.cardmarket.com/ws/v2.0/
+https://apiv2.cardmarket.com/ws/v2.0/
 ```
 
 ## Request Formats
 
 ### XML (Default)
 ```
-GET https://api.cardmarket.com/ws/v2.0/games
-GET https://api.cardmarket.com/ws/v2.0/output.xml/games
+GET https://apiv2.cardmarket.com/ws/v2.0/games
+GET https://apiv2.cardmarket.com/ws/v2.0/output.xml/games
 ```
 
 ### JSON
 ```
-GET https://api.cardmarket.com/ws/v2.0/output.json/games
+GET https://apiv2.cardmarket.com/ws/v2.0/output.json/games
 ```
 
 ## Authentication

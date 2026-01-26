@@ -54,7 +54,7 @@ final class StockResource extends HttpCaller
      * @throws \Exception
      *
      * @return array
-     *               The Article object into array. (https://api.cardmarket.com/ws/documentation/API_2.0:Entities:Article)
+     *               The Article object into array. (https://apiv2.cardmarket.com/ws/documentation/API_2.0:Entities:Article)
      */
     public function increaseStock(int $articleId, int $stock): array
     {
@@ -72,7 +72,7 @@ final class StockResource extends HttpCaller
      * @throws \Exception
      *
      * @return array
-     *               The Article object into array. (https://api.cardmarket.com/ws/documentation/API_2.0:Entities:Article)
+     *               The Article object into array. (https://apiv2.cardmarket.com/ws/documentation/API_2.0:Entities:Article)
      */
     public function decreaseStock(int $articleId, int $stock): array
     {

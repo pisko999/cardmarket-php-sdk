@@ -10,7 +10,7 @@ use Pisko\CardMarket\HttpClient\HttpClientCreator;
  * Class AuthenticationHeaderBuilder.
  *
  * Build the Authentication header string base on the Cardmarket documentation
- * https://api.cardmarket.com/ws/documentation/API:Auth_OAuthHeader
+ * https://apiv2.cardmarket.com/ws/documentation/API:Auth_OAuthHeader
  */
 final class AuthenticationHeaderBuilder
 {
