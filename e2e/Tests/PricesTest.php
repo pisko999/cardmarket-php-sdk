@@ -34,6 +34,27 @@ class PricesTest extends TestCase
     }
 
     /**
+     * Test getting price guide file for a specific game.
+     */
+    public function testGetPriceGuideFileWithGameId(): void
+    {
+        // Yu-Gi-Oh! (idGame=3)
+        $result = $this->client->prices()->getPriceGuideFile(3);
+        $this->logResponse('getPriceGuideFile_game3', ['type' => gettype($result), 'size' => is_string($result) ? strlen($result) : null]);
+
+        if ($result === false) {
+            $this->skip('No price guide file available for game 3');
+        }
+
+        $this->assertNotEmpty($result);
+
+        $lines = explode("\n", (string) $result);
+        $this->assertGreaterThan(1, count($lines), 'Price guide should have multiple lines');
+
+        info(sprintf('Price guide file for game 3 retrieved (%d lines)', count($lines)));
+    }
+
+    /**
      * Test price guide file consistency.
      */
     public function testPriceGuideFileConsistency(): void

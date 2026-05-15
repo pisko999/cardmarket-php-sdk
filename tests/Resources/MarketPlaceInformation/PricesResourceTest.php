@@ -27,6 +27,14 @@ class PricesResourceTest extends ResourceTestCase
         $this->assertStringContainsString('idProduct', $response);
     }
 
+    public function testGetPriceGuideFileWithGameId()
+    {
+        $response = $this->pricesResource->getPriceGuideFile(3);
+
+        $this->assertIsString($response);
+        $this->assertStringContainsString('idProduct', $response);
+    }
+
     protected function getMockResponses(): array
     {
         $csvContent = "idProduct,Price_AVG,Price_LOW\n123,5.50,3.00\n456,10.00,7.50";

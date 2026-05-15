@@ -17,6 +17,8 @@ final class PricesResource extends HttpCaller
     /**
      * Returns a price guide file in CSV format as string.
      *
+     * @param int $gameId The game ID (default is 1 for Magic: The Gathering)
+     *
      * @throws \Pisko\CardMarket\Exception\UnknownErrorException
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface
@@ -24,9 +26,9 @@ final class PricesResource extends HttpCaller
      *
      * @return string|false
      */
-    public function getPriceGuideFile(): string|false
+    public function getPriceGuideFile(int $gameId = 1): string|false
     {
-        $response = $this->get(sprintf('/priceguide'));
+        $response = $this->get(sprintf('/priceguide?idGame=%d', $gameId));
 
         return gzdecode(base64_decode($response['priceguidefile']));
     }
